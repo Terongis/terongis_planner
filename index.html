@@ -43,7 +43,7 @@
     body {
       font-family: 'Inter', sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial;
       margin: 0;
-      background: var(--color-bg-dark);
+      background: #2f3336;
       color: var(--color-text-light);
       min-height: 100vh;
       line-height: 1.6;
@@ -54,23 +54,28 @@
     /* Lock Screen (Modernisé) */
     #lockScreen {
       display: flex;
+      background: #2f3336 !important;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
     }
 #accessCodeInput {
   /* Rend le curseur de saisie invisible */
   caret-color: transparent !important; 
 }
     .lockCard {
-      background: var(--color-card-dark);
+      
+      max-width: 350px !important;
+      width: 90% !important;
+      margin: 50px auto !important; 
+      padding: 20px;
+      background: #2f3336 !important;
       padding: 50px;
       border-radius: var(--border-radius);
       box-shadow: var(--shadow-deep);
       text-align: center;
-      max-width: 450px;
-      width: 100%;
       border: 1px solid var(--color-border);
     }
     .lockCard h2 {
@@ -92,7 +97,7 @@
       border-radius: var(--border-radius);
       letter-spacing: 12px;
       font-weight: bold;
-      background: var(--color-bg-dark);
+      background: #2f3336;
       color: var(--color-primary);
       transition: all 0.3s;
     }
@@ -115,7 +120,7 @@
       padding: 30px;
     }
     .header {
-      background: var(--color-card-dark);
+      background: #2f3336;
       padding: 30px;
       border-radius: var(--border-radius);
       box-shadow: var(--shadow-soft);
@@ -133,7 +138,7 @@
       font-size: 16px;
     }
  .card {
-  background: var(--color-card-dark);
+  background: #2f3336;
   padding: 25px;
   border-radius: var(--border-radius);
   /* Applique le relief Neumorphic */
@@ -181,7 +186,7 @@
       border-radius: 8px;
       font-size: 16px;
       transition: all 0.3s;
-      background: var(--color-bg-dark);
+      background: #2f3336;
       color: var(--color-text-light);
       font-family: inherit;
     }
@@ -192,7 +197,7 @@
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
-      background: var(--color-bg-dark);
+      background: #2f3336;
     }
     textarea {
       resize: vertical;
@@ -201,7 +206,7 @@
     }
     select {
       appearance: none;
-      background: var(--color-bg-dark) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23a0a0a0" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
+      background: #2f3336 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23a0a0a0" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
       background-size: 18px;
       padding-right: 35px;
     }
@@ -234,16 +239,28 @@
 /* 4a. Bouton Principal (Vert Vif - Ajouter/Valider) */
 /* ---------------------------------- */
 .btn-primary {
-    /* DÉGRADÉ VERT VIF VISIBLE (Résout le problème du dégradé) */
-    background: linear-gradient(145deg, var(--color-primary), var(--color-primary-dark)) !important;
-    color: white;
-}
-.btn-primary:hover {
-    /* Garde le dégradé et ajoute le zoom + halo lumineux */
-    transform: scale(1.03); 
-    box-shadow: 0 0 14px 3px rgba(62, 220, 157, 0.5) !important;
+  background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
+              0 0 12px rgba(92, 255, 148, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45),
+              0 0 18px rgba(92, 255, 148, 0.55);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35),
+              0 0 8px rgba(92, 255, 148, 0.4);
+}
 
 /* ---------------------------------- */
 /* 4b. Bouton Secondaire (Gris - Modifier/Annuler/Sauvegarder) */
@@ -310,7 +327,7 @@
       margin-top: 15px;
     }
     .category-item {
-      background: var(--color-bg-dark);
+      background: #2f3336;
       padding: 10px 18px;
       border-radius: 8px;
       display: flex;
@@ -328,7 +345,7 @@
 
     /* Tasks List */
     .task-item {
-      background: var(--color-bg-dark);
+      background: #2f3336;
       padding: 20px;
       border-radius: 10px;
       margin-bottom: 15px;
@@ -378,7 +395,7 @@
     }
     .task-cost-badge {
       display: inline-block;
-      background: var(--color-primary);
+      background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
       color: white;
       padding: 5px 12px;
       border-radius: 15px;
@@ -425,7 +442,7 @@
     }
     /* Coût Total */
     .cost-total-card {
-      background: var(--color-primary);
+      background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
       color: white;
       padding: 15px 25px;
       border-radius: var(--border-radius);
@@ -478,14 +495,14 @@
      * ----------------------------------------------------
      */
     .gantt-container {
-      background: var(--color-bg-dark);
+      background: #2f3336;
       border-radius: 10px;
       box-shadow: var(--shadow-soft);
       border: 1px solid var(--color-border);
       position: relative;
     }
     .gantt-year-header {
-      background: var(--color-primary-dark);
+      background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
       color: white;
       padding: 18px;
       text-align: center;
@@ -514,7 +531,7 @@
     .gantt-grid {
       display: grid;
       gap: 0;
-      background: var(--color-bg-dark);
+      background: #2f3336;
       border: 1px solid var(--color-border);
       border-top: none;
       border-radius: 0 0 10px 10px;
@@ -535,7 +552,7 @@
       position: relative;
     }
     .gantt-day-header {
-      background: var(--color-bg-dark);
+      background: #2f3336;
       padding: 10px 4px;
       text-align: center;
       font-size: 13px;
@@ -568,7 +585,7 @@
       color: var(--color-text-light);
       border-right: 1px solid var(--color-border);
       border-bottom: 1px solid #222;
-      background: var(--color-bg-dark);
+      background: #2f3336;
       cursor: pointer;
       transition: background 0.2s;
       white-space: nowrap;
@@ -585,7 +602,7 @@
     .gantt-cell {
       border-right: 1px solid var(--color-border);
       border-bottom: 1px solid #222;
-      background: var(--color-bg-dark);
+      background: #2f3336;
       position: relative;
       min-height: 45px;
     }
@@ -628,7 +645,7 @@
 /* ==================================================== */
 
 input, select, textarea {
-    background: var(--color-bg-dark); /* Même couleur que le fond */
+    background: #2f3336; /* Même couleur que le fond */
     color: var(--color-text-light);
     border: none; /* Très important: retire la bordure standard */
     padding: 10px;
@@ -1029,26 +1046,65 @@ button, .button, .category-btn {
     /* On garde l'ombre Neumorphic, mais on la rend légèrement plus discrète */
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3), -4px -4px 8px rgba(255, 255, 255, 0.03) !important; 
 }
+
+/* ==================================================== */
+/* STYLE DU LOGO IMAGE */
+/* ==================================================== */
+
+/* Logo pour l'écran de verrouillage (centré) */
+#lockLogo {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+
+  display: block;
+  margin: 0 auto 20px auto;
+
+  object-fit: contain;
+}
+.lockCard img {
+  max-width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+}
+
+/* Logo pour l'en-tête principal (Haut à Gauche) */
+.app-header-logo {
+height: 250px;
+max-height: 6vh;
+width: auto;
+display: block;
+}
+@media (max-width: 768px) {
+.app-header-logo {
+height: 30px;
+}
+}
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="lockScreen">
-    <div class="lockCard">
-      <h2>🔒 Terongis Access</h2>
-      <p>Bienvenue. Entrez votre code de sécurité.</p>
-      <input id="accessCode" type="password" placeholder="••••" maxlength="4" autocomplete="off" />
-      <button id="validateButton" class="btn btn-primary mt-4">Valider l'Accès</button>
-      <p id="codeError">❌ Code Incorrect. Veuillez réessayer.</p>
-    </div>
+ <div id="lockScreen">
+  <div class="lockCard">
+
+    <img src="logo_arbre.png" alt="Logo de l'application" id="lockLogo">
+
+    <p>Bienvenue. Entrez votre code de sécurité.</p>
+
+    <input id="accessCode" type="password" placeholder="••••" maxlength="4" autocomplete="off" />
+
+    <button id="validateButton" class="btn btn-primary mt-4">Valider l'Accès</button>
+
+    <p id="codeError">❌ Code Incorrect. Veuillez réessayer.</p>
+    
   </div>
+</div>
 
   <div id="appContainer" style="display:none;">
     <div class="app">
       <div class="header">
-        <h1>✨ Terongis Planner</h1>
-        <p class="subtitle">Gestion de projets et visualisation de l'avancement</p>
-      </div>
+        <img src="logo_arbre.png" alt="Logo de l'application" class="app-header-logo">
+             </div>
 
       <div class="status-bar">
         <div class="status-info">
@@ -1060,7 +1116,7 @@ button, .button, .category-btn {
         </div>
         
         <div id="costTotalCard" class="cost-total-card" style="grid-column: 2 / 4;">
-          <h3>COÛT TOTAL DU PROJET</h3>
+          <h3>COÛT TOTAL</h3>
           <p id="totalCostDisplay">0,00 €</p>
         </div>
       </div>
@@ -1093,7 +1149,10 @@ button, .button, .category-btn {
         </div>
         <textarea id="taskDesc" placeholder="Description détaillée (facultatif)"></textarea>
         <div class="form-row">
-          <button class="btn btn-primary" id="submitBtn" onclick="addTask()">➕ Ajouter la tâche</button>
+        <button class="btn btn-primary" id="submitBtn" onclick="addTask()">
+  <span style="color: white; filter: grayscale(1) brightness(2);">➕</span> 
+  <span style="color: white;">Ajouter la tâche</span>
+</button>
           <button class="btn btn-secondary" id="cancelBtn" style="display:none;" onclick="cancelEdit()">Annuler</button>
         </div>
       </div>
@@ -1340,43 +1399,39 @@ function checkAccess() {
       const cost = parseFloat(document.getElementById("taskCost").value) || 0;
 
       if (!name) {
-        alert("Veuillez remplir le nom, la date de début et la date de fin.");
+        alert("Tu as oublié le nom de la tâche.");
         return;
       }
 
-      if (new Date(start) > new Date(end)) {
-        alert("La date de début doit être avant ou égale à la date de fin.");
-        return;
-      }
+     if (editingTaskId) {
+    // Si vous modifiez, assurez-vous que la fonction updateTask() gère l'enregistrement.
+    updateTask(); 
+  } else {
+    const color = TASK_COLORS[colorIndex % TASK_COLORS.length];
+    colorIndex++;
 
-      if (editingTaskId) {
-        updateTask();
-      } else {
-        const color = TASK_COLORS[colorIndex % TASK_COLORS.length];
-        colorIndex++;
-        
-        const task = {
-          id: Date.now().toString(),
-          name,
-          start,
-          end,
-          desc,
-          categoryId,
-          cost,
-          color,
-          completed: false,
-          createdAt: new Date().toISOString()
-        };
+    const task = {
+      id: Date.now().toString(),
+      name,
+      start, // 'start' peut être vide
+      end,   // 'end' peut être vide
+      desc,
+      categoryId,
+      cost,
+      color,
+      completed: false,
+      createdAt: new Date().toISOString()
+    };
 
-        tasks.push(task);
-        saveToCloud();
-        updateStatus(`Tâche "${name}" ajoutée.`);
-        clearForm();
-        renderTasks();
-        renderGantt();
-        updateTotalCostDisplay();
-      }
-    }
+    tasks.push(task);
+    saveToCloud();
+    updateStatus(`Tâche "${name}" ajoutée.`);
+    clearForm();
+    renderTasks();
+    renderGantt();
+    updateTotalCostDisplay();
+  }
+}
 
     function updateTask() {
       const name = document.getElementById("taskName").value.trim();
@@ -1386,15 +1441,15 @@ function checkAccess() {
       const categoryId = document.getElementById("taskCategory").value;
       const cost = parseFloat(document.getElementById("taskCost").value) || 0;
 
-      if (!name || !start || !end) {
+      if (!name) {
         alert("Veuillez remplir tous les champs obligatoires");
         return;
       }
 
-      if (new Date(start) > new Date(end)) {
-        alert("La date de début doit être avant ou égale à la date de fin");
-        return;
-      }
+      if (start && end && new Date(start) > new Date(end)) {
+    alert("La date de début doit être avant ou égale à la date de fin.");
+    return;
+}
 
       const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
       if (taskIndex === -1) return;
