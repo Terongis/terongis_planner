@@ -15,25 +15,29 @@
 
     /* Variables et Base */
     :root {
-      /* Couleurs (Rétablies à la version violette) */
-      --color-primary: #8b5cf6; /* Violet Énergique */
-      --color-primary-dark: #7c3aed;
-      --color-bg-dark: #121217; /* Fond très sombre */
-      --color-card-dark: #1e1e26; /* Conteneur (Card) plus clair */
-      --color-text-light: #e0e0e0;
-      --color-text-muted: #a0a0a0;
-      --color-border: #333333;
-      --color-success: #10b981; /* Vert (Terminé) - Non utilisé pour les tâches */
-      --color-danger: #ef4444; /* Rouge (Ligne Aujourd'hui) */
-      --color-warning: #f59e0b;
-      
-      /* Ombres */
-      --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.25);
-      --shadow-deep: 0 10px 30px rgba(0, 0, 0, 0.4);
+/* NOUVELLES COULEURS : NEUMORPHIC VERT & GRIS */
+  --color-primary: #3EDC9D;        /* Vert Vif PLUS CLAIR pour dégradé */
+  --color-primary-dark: #10B981;   /* Vert plus sombre */
+  --color-bg-dark: #2C2F36;        /* Gris Charbon Profond (Fond général) */
+  --color-card-dark: #2C2F36;      /* Même que le fond */
+  --color-text-light: #F0F0F0;     /* Blanc cassé (Texte principal) */
+  --color-text-muted: #A0A0A0;     /* Gris Moyen (Texte secondaire) */
+  --color-border: #4D515A;         /* Gris Foncé Ligne */
+  --color-success: #10B981;        /* Vert Succès */
+  --color-danger: #EF4444;         /* Rouge (Supprimer) */
+  --color-warning: #F59E0B;        /* Jaune */
+  
+  /* Ombres pour Neumorphism (CRUCIALES) */
+  --shadow-light: -6px -6px 12px rgba(255, 255, 255, 0.04);
+  --shadow-dark: 6px 6px 12px rgba(0, 0, 0, 0.35);
+  --shadow-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.05);
 
-      /* Autres */
-      --border-radius: 12px;
-    }
+  /* Remplacement des anciennes ombres pour plus de propreté */
+  --shadow-soft: var(--shadow-dark); 
+  --shadow-deep: var(--shadow-dark); 
+
+  --border-radius: 12px;
+}
 
     * { box-sizing: border-box; }
     body {
@@ -55,6 +59,7 @@
       min-height: 100vh;
       padding: 20px;
     }
+
     .lockCard {
       background: var(--color-card-dark);
       padding: 50px;
@@ -124,14 +129,16 @@
       color: var(--color-text-muted);
       font-size: 16px;
     }
-    .card {
-      background: var(--color-card-dark);
-      padding: 25px;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow-soft);
-      margin-bottom: 25px;
-      border: 1px solid var(--color-border);
-    }
+ .card {
+  background: var(--color-card-dark);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  /* Applique le relief Neumorphic */
+  box-shadow: var(--shadow-light), var(--shadow-dark); 
+  margin-bottom: 25px;
+  /* Supprime l'ancienne bordure */
+  border: none;
+}
     .card-title {
       font-size: 22px;
       font-weight: 700;
@@ -197,53 +204,101 @@
     }
 
     /* Buttons */
-    .btn {
-      padding: 14px 28px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-    .btn-primary {
-      background: var(--color-primary);
-      color: white;
-    }
-    .btn-primary:hover {
-      background: var(--color-primary-dark);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-    }
-    .btn-secondary {
-      background: var(--color-border);
-      color: var(--color-text-light);
-    }
-    .btn-secondary:hover {
-      background: #444444;
-      transform: translateY(-1px);
-    }
-    .btn-success {
-      background: var(--color-success);
-      color: white;
-    }
-    .btn-success:hover {
-      background: #059669;
-    }
-    .btn-danger {
-      background: var(--color-danger);
-      color: white;
-    }
-    .btn-danger:hover {
-      background: #dc2626;
-    }
-    .btn-small {
-      padding: 8px 16px;
-      font-size: 14px;
-      box-shadow: none;
-    }
 
+.btn {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 10px; /* Coins arrondis Neumorphic */
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s ease; /* Fluidité augmentée pour éviter le clignotement */
+  /* Remplace l'ancienne ombre simple par l'ombre Neumorphic par défaut */
+  box-shadow: var(--shadow-light), var(--shadow-dark); 
+}
+
+.btn:focus {
+    outline: none !important;
+}
+.btn:active {
+    /* Effet "pressé" (enfoncé) au clic */
+    box-shadow: var(--shadow-inset) !important;
+    transform: scale(0.98);
+}
+
+
+/* ---------------------------------- */
+/* 4a. Bouton Principal (Vert Vif - Ajouter/Valider) */
+/* ---------------------------------- */
+.btn-primary {
+    /* DÉGRADÉ VERT VIF VISIBLE (Résout le problème du dégradé) */
+    background: linear-gradient(145deg, var(--color-primary), var(--color-primary-dark)) !important;
+    color: white;
+}
+.btn-primary:hover {
+    /* Garde le dégradé et ajoute le zoom + halo lumineux */
+    transform: scale(1.03); 
+    box-shadow: 0 0 14px 3px rgba(62, 220, 157, 0.5) !important;
+}
+
+
+/* ---------------------------------- */
+/* 4b. Bouton Secondaire (Gris - Modifier/Annuler/Sauvegarder) */
+/* ---------------------------------- */
+.btn-secondary, .edit-btn {
+    /* FORCE LE GRIS (Résout le problème du vert) */
+    background: linear-gradient(145deg, #3A3E46, #303339) !important;
+    color: var(--color-text-light);
+    /* Rétablit l'ombre Neumorphic par défaut */
+    box-shadow: var(--shadow-light), var(--shadow-dark) !important;
+}
+.btn-secondary:hover, .edit-btn:hover {
+    /* NE S'ASSOMBRIT PAS et a un zoom/mouvement doux */
+    background: linear-gradient(145deg, #3A3E46, #303339) !important; /* Répète le dégradé pour ne pas assombrir */
+    transform: translateY(-1px);
+    /* PAS DE HALO LUMINEUX (Ombre foncée subtile uniquement) */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), -4px -4px 10px rgba(44, 47, 54, 0.0) !important;
+}
+
+
+/* ---------------------------------- */
+/* 4c. Bouton Succès (GRIS - Terminé) */
+/* ---------------------------------- */
+.btn-success {
+    /* FORCE LE GRIS (Si vous voulez que Terminé soit gris) */
+    background: linear-gradient(145deg, #3A3E46, #303339) !important; 
+    color: white;
+    box-shadow: var(--shadow-light), var(--shadow-dark) !important;
+}
+.btn-success:hover {
+    /* NE S'ASSOMBRIT PAS et utilise le zoom */
+    background: linear-gradient(145deg, #3A3E46, #303339) !important;
+    transform: scale(1.03);
+    /* PAS DE HALO LUMINEUX */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), -4px -4px 10px rgba(44, 47, 54, 0.0) !important;
+}
+
+
+/* ---------------------------------- */
+/* 4d. Bouton Danger (Rouge - Supprimer) */
+/* ---------------------------------- */
+.btn-danger {
+    /* DÉGRADÉ ROUGE (Rétabli) */
+    background: linear-gradient(145deg, var(--color-danger), #CC3A3A) !important;
+    color: white;
+}
+.btn-danger:hover {
+    /* Garde le dégradé et ajoute le zoom + halo lumineux */
+    background: linear-gradient(145deg, var(--color-danger), #CC3A3A) !important; 
+    transform: scale(1.03);
+     
+}
+
+
+.btn-small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
     /* Categories */
     .category-list {
       display: flex;
@@ -393,7 +448,7 @@
       border-radius: 50%;
       background: var(--color-success);
       margin-right: 10px;
-      box-shadow: 0 0 5px var(--color-success);
+      box-shadow: 0 0 access5px var(--color-success);
       animation: pulse 2s infinite;
     }
     @keyframes pulse {
@@ -563,6 +618,36 @@
         pointer-events: none;
     }
 
+
+
+/* ==================================================== */
+/* 2. STYLE DES CHAMPS DE SAISIE (EFFET ENFONCÉ) */
+/* ==================================================== */
+
+input, select, textarea {
+    background: var(--color-bg-dark); /* Même couleur que le fond */
+    color: var(--color-text-light);
+    border: none; /* Très important: retire la bordure standard */
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%; /* Assure qu'ils prennent toute la largeur du conteneur */
+    
+    /* Utilise l'ombre 'inset' pour l'effet enfoncé */
+    box-shadow: var(--shadow-inset);
+    transition: border 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none; /* Supprime la surbrillance par défaut du navigateur */
+    border: none; /* Supprime toute bordure additionnelle */
+    
+    /* Optionnel : On peut ajouter une petite ombre autour du champ au focus */
+    /* box-shadow: var(--shadow-inset), 0 0 5px rgba(52, 211, 153, 0.5); */
+}
+/* Supprime la surbrillance au focus pour les boutons et liens cliquables */
+button:focus, .button:focus, a:focus, .category-btn:focus {
+    outline: none;
+}
     /* ============================================
      * RESPONSIVE DESIGN - MOBILE
      * ============================================ */
@@ -889,6 +974,58 @@
         min-width: 20px !important;
       }
     }
+
+/* ==================================================== */
+/* SUPPRESSION DE L'ENCADREMENT VIOLET AU FOCUS/CLIC */
+/* ==================================================== */
+
+/* Cible tous les éléments HTML au moment où ils sont en focus */
+*:focus {
+    outline: none !important;
+}
+
+/* Cible les éléments interactifs spécifiques pour éliminer toute bordure héritée */
+button:focus, 
+input:focus, 
+select:focus, 
+textarea:focus, 
+a:focus,
+.category-btn:focus,
+.task-item:focus {
+    /* Supprime la bordure par défaut et les bordures héritées */
+    border: none !important; 
+    
+    /* Assurez-vous que l'ombre Neumorphic est la seule chose visible au focus */
+    box-shadow: var(--shadow-inset) !important;
+}
+/* ==================================================== */
+/* CORRECTION DES BOUTONS (DÉGRADÉ + SUPPRESSION VIOLET) */
+/* ==================================================== */
+
+/* Applique le style par défaut (Dégradé Vert + Relief Neumorphic) */
+button, .button, .category-btn { 
+    /* Ceci est la règle du DÉGRADÉ */
+    background: linear-gradient(145deg, var(--color-primary), var(--color-primary-dark)) !important; 
+    color: var(--color-text-light);
+    border: none !important; 
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    /* Ombre de relief Neumorphic */
+    box-shadow: var(--shadow-light), var(--shadow-dark) !important;
+}
+
+
+    
+    /* SUPPRIME TOUTE FORME D'OMBRE OU DE BORDURE VIOLETTE */
+    border: none !important;
+    outline: none !important;
+    
+    /* On garde l'ombre Neumorphic, mais on la rend légèrement plus discrète */
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3), -4px -4px 8px rgba(255, 255, 255, 0.03) !important; 
+}
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
