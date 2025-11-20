@@ -59,7 +59,10 @@
       min-height: 100vh;
       padding: 20px;
     }
-
+#accessCodeInput {
+  /* Rend le curseur de saisie invisible */
+  caret-color: transparent !important; 
+}
     .lockCard {
       background: var(--color-card-dark);
       padding: 50px;
@@ -1336,7 +1339,7 @@ function checkAccess() {
       const categoryId = document.getElementById("taskCategory").value;
       const cost = parseFloat(document.getElementById("taskCost").value) || 0;
 
-      if (!name || !start || !end) {
+      if (!name) {
         alert("Veuillez remplir le nom, la date de début et la date de fin.");
         return;
       }
@@ -1546,60 +1549,69 @@ function checkAccess() {
 
     // ============= GANTT CHART (Logique Stable + Responsive) =============
     function renderGantt() {
-      const wrapper = document.getElementById("ganttWrapper");
-      const container = document.getElementById("ganttContainer");
+  const wrapper = document.getElementById("ganttWrapper");
+  const container = document.getElementById("ganttContainer");
 
-      if (tasks.length === 0) {
-        container.innerHTML = '<p class="text-muted">Le diagramme de Gantt affichera vos tâches planifiées ici.</p>';
-        return;
+  // ✨ CHANGEMENT 1 : Créer le tableau filtré. 
+  // Inclut uniquement les tâches NON complétées ET ayant une date de début ET une date de fin.
+  const filteredTasks = tasks.filter(task => 
+      !task.completed && task.start && task.end
+  );
+  
+  // ✨ CHANGEMENT 2 : Utiliser le tableau filtré pour la vérification initiale
+  if (filteredTasks.length === 0) { 
+    container.innerHTML = '<p class="text-muted">Aucune tâche active (avec dates complètes) à afficher dans le diagramme de Gantt.</p>';
+    return;
+  }
+    
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // ✨ CHANGEMENT 3 : Utiliser le tableau filtré pour calculer la plage de dates
+  const allDates = filteredTasks.flatMap(t => [new Date(t.start), new Date(t.end)]);
+    
+  let minDate = allDates.length > 0 ? new Date(Math.min(...allDates)) : today;
+  let maxDate = allDates.length > 0 ? new Date(Math.max(...allDates)) : today;
+
+  minDate = new Date(Math.min(minDate.getTime(), today.getTime()));
+  maxDate = new Date(Math.max(maxDate.getTime(), today.getTime()));
+
+  minDate.setHours(0, 0, 0, 0);
+  maxDate.setHours(0, 0, 0, 0);
+    
+  const startRange = new Date(minDate);
+  startRange.setDate(startRange.getDate() - 7);
+    
+  const endRange = new Date(maxDate);
+  endRange.setDate(endRange.getDate() + 7);
+
+  startRange.setHours(0, 0, 0, 0);
+  endRange.setHours(0, 0, 0, 0);
+
+  const days = [];
+  const currentDate = new Date(startRange);
+    
+  while (currentDate.getTime() <= endRange.getTime()) {
+    days.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+    
+  const tasksByCategory = new Map();
+  const uncategorized = [];
+
+  // ✨ CHANGEMENT 4 : Utiliser le tableau filtré pour le tri et les boucles
+  filteredTasks.sort((a, b) => new Date(a.start) - new Date(b.start));
+
+  filteredTasks.forEach(task => {
+    if (task.categoryId) {
+      if (!tasksByCategory.has(task.categoryId)) {
+        tasksByCategory.set(task.categoryId, []);
       }
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const allDates = tasks.flatMap(t => [new Date(t.start), new Date(t.end)]);
-      
-      let minDate = allDates.length > 0 ? new Date(Math.min(...allDates)) : today;
-      let maxDate = allDates.length > 0 ? new Date(Math.max(...allDates)) : today;
-
-      minDate = new Date(Math.min(minDate.getTime(), today.getTime()));
-      maxDate = new Date(Math.max(maxDate.getTime(), today.getTime()));
-
-      minDate.setHours(0, 0, 0, 0);
-      maxDate.setHours(0, 0, 0, 0);
-      
-      const startRange = new Date(minDate);
-      startRange.setDate(startRange.getDate() - 7);
-      
-      const endRange = new Date(maxDate);
-      endRange.setDate(endRange.getDate() + 7);
-
-      startRange.setHours(0, 0, 0, 0);
-      endRange.setHours(0, 0, 0, 0);
-
-      const days = [];
-      const currentDate = new Date(startRange);
-      
-      while (currentDate.getTime() <= endRange.getTime()) {
-        days.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-      
-      const tasksByCategory = new Map();
-      const uncategorized = [];
-
-      tasks.sort((a, b) => new Date(a.start) - new Date(b.start));
-
-      tasks.forEach(task => {
-        if (task.categoryId) {
-          if (!tasksByCategory.has(task.categoryId)) {
-            tasksByCategory.set(task.categoryId, []);
-          }
-          tasksByCategory.get(task.categoryId).push(task);
-        } else {
-          uncategorized.push(task);
-        }
-      });
+      tasksByCategory.get(task.categoryId).push(task);
+    } else {
+      uncategorized.push(task);
+    }
+  });
       
       const sortedCategories = categories.filter(c => tasksByCategory.has(c.id));
       const allTasksRendered = [];
