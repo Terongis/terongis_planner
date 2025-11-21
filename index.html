@@ -722,25 +722,38 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
         word-break: break-word;
       }
 
-      /* Status Bar Mobile - Empilé verticalement */
-      .status-bar {
-        grid-template-columns: 1fr;
-        gap: 15px;
-      }
-      .status-info {
-        padding: 12px 15px;
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-      }
-      .cost-total-card {
-        grid-column: 1 / 2 !important;
-        padding: 12px 15px;
-      }
-      .cost-total-card p {
-        font-size: 20px;
-      }
+     /* Status Bar Mobile - Empilé verticalement */
+.status-bar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  padding: 0 20px; /* Ajoute un padding horizontal pour éviter que les éléments touchent les bords */
+  margin-bottom: 15px;
+}
 
+.status-info {
+  padding: 12px 15px;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+  background-color: #f0f0f0; /* Optionnel : fond pour le statut */
+  border-radius: 8px;
+}
+
+.cost-total-card {
+  grid-column: 1 / 2 !important;
+  padding: 12px 15px;
+  margin: 0 10px; /* Ajoute une marge horizontale pour éviter que le cadre touche les bords */
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.cost-total-card p {
+  font-size: 20px;
+  margin: 0;
+}
       /* Form Mobile - Empilé verticalement */
       .form-grid {
         grid-template-columns: 1fr;
