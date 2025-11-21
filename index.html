@@ -748,12 +748,13 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
 .cost-total-card {
  grid-column: 1 / 2 !important;
     padding: 12px 15px;
-    max-width: calc(100% - 40px); /* Réduit la largeur maximale pour laisser de l'espace */
-    margin: 0 20px; /* Ajoute une marge à gauche et à droite */
+    margin: 0 20px; /* Marge à gauche et à droite */
     background-color: #4CAF50;
     color: white;
     border-radius: 8px;
     text-align: center;
+    width: auto; /* Laisse la largeur s'ajuster au contenu */
+    max-width: 100%; /* Assure qu'il ne dépasse pas la largeur disponible */
     box-sizing: border-box;
 }
 
