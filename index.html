@@ -439,13 +439,13 @@
     .cost-total-card {
       background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
       color: white;
-      padding: 10px 15px;
+      padding: 12px 15px;
+      max-width: calc(100% - 40px); /* Réduit la largeur pour laisser de l'espace */
+      margin: 0 20px; 
       border-radius: 8px;
-      border-radius: var(--border-radius);
-      font-weight: 700;
       text-align: center;
       box-shadow: var(--shadow-deep);
-      border: 1px solid var(--color-primary-dark);
+      box-sizing: border-box;
     }
     .cost-total-card h3 {
       margin: 0 ;
@@ -700,6 +700,7 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
       box-sizing: border-box;
       height: auto !important;
       padding: 10px 20px;
+      margin: 0 auto;
   
 }
       .header h1 {
@@ -726,11 +727,13 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
 
      /* Status Bar Mobile - Empilé verticalement */
 .status-bar {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-  padding: 0 20px; /* Ajoute un padding horizontal pour éviter que les éléments touchent les bords */
-  margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 0 20px; /* Espace interne pour éviter que les éléments touchent les bords */
+    margin: 0 auto; /* Centre le conteneur */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .status-info {
@@ -743,14 +746,15 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
 }
 
 .cost-total-card {
-  grid-column: 1 / 2 !important;
-  padding: 12px 15px;
-  max-width: 100%;
-  margin: 0 auto
-  background-color: #4CAF50;
-  color: white;
-  border-radius: 8px;
-  text-align: center;
+ grid-column: 1 / 2 !important;
+    padding: 12px 15px;
+    max-width: calc(100% - 40px); /* Réduit la largeur maximale pour laisser de l'espace */
+    margin: 0 20px; /* Ajoute une marge à gauche et à droite */
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    text-align: center;
+    box-sizing: border-box;
 }
 
 .cost-total-card p {
