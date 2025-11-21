@@ -49,6 +49,8 @@
       line-height: 1.6;
       overflow-x: hidden;
       width: 100%;
+      overflow-x: hidden; /* Désactive le défilement horizontal */
+      position: relative;
     }
 
     /* Lock Screen (Modernisé) */
@@ -743,7 +745,8 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
 .cost-total-card {
   grid-column: 1 / 2 !important;
   padding: 12px 15px;
-  margin: 0 10px; /* Ajoute une marge horizontale pour éviter que le cadre touche les bords */
+  max-width: 100%;
+  margin: 0 auto
   background-color: #4CAF50;
   color: white;
   border-radius: 8px;
