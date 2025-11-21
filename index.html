@@ -121,19 +121,17 @@
     }
     .header {
       background: #2f3336;
-      padding: 30px;
-      margin-bottom: 30px;
-          }
-    .header h1 {
-      margin: 0 0 5px 0;
-      color: var(--color-primary);
-      font-size: 36px;
-      font-weight: 800;
-    }
-    .header .subtitle {
-      color: var(--color-text-muted);
-      font-size: 16px;
-    }
+      display: flex;
+      justify-content: space-between; /* Pour séparer le logo à gauche et les autres éléments à droite */
+      align-items: center;
+      padding: 10px 20px; /* Ajustez le padding selon vos besoins */
+}
+    .header-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacement entre les éléments */
+}
+   
  .card {
   background: #2f3336;
   padding: 25px;
@@ -427,21 +425,15 @@
       margin-bottom: 25px;
     }
     .status-info {
-      background: var(--color-card-dark);
-      padding: 15px 25px;
-      border-radius: var(--border-radius);
-      font-size: 14px;
-      color: var(--color-text-muted);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      border: 1px solid var(--color-border);
+      gap: 5px;
     }
     /* Coût Total */
     .cost-total-card {
       background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
       color: white;
-      padding: 15px 25px;
+      padding: 10px;
       border-radius: var(--border-radius);
       font-weight: 700;
       text-align: center;
@@ -449,13 +441,14 @@
       border: 1px solid var(--color-primary-dark);
     }
     .cost-total-card h3 {
-      margin: 0 0 5px 0;
+      margin: 0 ;
       font-size: 14px;
       font-weight: 500;
     }
     .cost-total-card p {
-      margin: 0;
-      font-size: 24px;
+      margin: 5px 0 0 0;
+      font-size: 16px;
+      font-weight: bold;
     }
     
     .status-indicator {
@@ -1049,11 +1042,7 @@ button, .button, .category-btn {
     /* On garde l'ombre Neumorphic, mais on la rend légèrement plus discrète */
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3), -4px -4px 8px rgba(255, 255, 255, 0.03) !important; 
 }
-    .header-controls-right {
-    display: flex;
-    gap: 15px; /* Ajoute de l'espace entre la carte Synchro et la carte Coût Total */
-    align-items: center; /* Aligne les deux cartes verticalement */
-}
+   
 
 /* ==================================================== */
 /* STYLE DU LOGO IMAGE */
@@ -1075,12 +1064,7 @@ button, .button, .category-btn {
   max-height: 280px;
   object-fit: contain;
 }
-    .header-controls-right {
-    display: flex;
-    gap: 15px; /* Espace entre la Synchro et le Coût Total */
-    align-items: center; /* Aligne les deux cartes verticalement */
-}
-
+   
 /* Logo pour l'en-tête principal (Haut à Gauche) */
 .app-header-logo {
 height: 200px !important;
@@ -1110,25 +1094,22 @@ height: 30px;
   </div>
 </div>
 
-  <div id="appContainer" style="display:none;">
-      <div class="header">
-         <img src="logo_arbre.png" alt="Logo de l'application" class="app-header-logo">
-    
-    <div class="header-controls-right">
-        
-        <div class="status-info">
-            <div>
-                 <span class="status-indicator"></span>
+<div id="appContainer" style="display:none;">
+    <div class="header">
+        <img src="logo_arbre.png" alt="Logo de l'application" class="app-header-logo">
+
+        <div class="header-controls-right">
+            <div class="status-info">
+                <span class="status-indicator"></span>
                 <span id="statusText">Prêt pour la planification</span>
             </div>
+            <div id="costTotalCard" class="cost-total-card">
+                <h3>COÛT TOTAL</h3>
+                <p id="totalCostDisplay">0,00 €</p>
             </div>
-      <div id="costTotalCard" class="cost-total-card">
-            <h3>COÛT TOTAL</h3>
-            <p id="totalCostDisplay">0,00 €</p>
         </div>
-      
     </div>
-    <div class="app">            
+    <div class="app">
     </div>
 </div>
 
