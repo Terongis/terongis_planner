@@ -1,0 +1,1817 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Terongis Planner</title>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <style>
+    /*
+     * ----------------------------------------------------
+     * Style CSS Refonte - Terongis Planner (Responsive)
+     * ----------------------------------------------------
+     */
+
+    /* Variables et Base */
+    :root {
+/* NOUVELLES COULEURS : NEUMORPHIC VERT & GRIS */
+  --color-primary: #3EDC9D;        /* Vert Vif PLUS CLAIR pour dégradé */
+  --color-primary-dark: #10B981;   /* Vert plus sombre */
+  --color-bg-dark: #2C2F36;        /* Gris Charbon Profond (Fond général) */
+  --color-card-dark: #2C2F36;      /* Même que le fond */
+  --color-text-light: #F0F0F0;     /* Blanc cassé (Texte principal) */
+  --color-text-muted: #A0A0A0;     /* Gris Moyen (Texte secondaire) */
+  --color-border: #4D515A;         /* Gris Foncé Ligne */
+  --color-success: #10B981;        /* Vert Succès */
+  --color-danger: #EF4444;         /* Rouge (Supprimer) */
+  --color-warning: #F59E0B;        /* Jaune */
+  
+  /* Ombres pour Neumorphism (CRUCIALES) */
+  --shadow-light: -6px -6px 12px rgba(255, 255, 255, 0.04);
+  --shadow-dark: 6px 6px 12px rgba(0, 0, 0, 0.35);
+  --shadow-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.4), inset -4px -4px 8px rgba(255, 255, 255, 0.05);
+
+  /* Remplacement des anciennes ombres pour plus de propreté */
+  --shadow-soft: var(--shadow-dark); 
+  --shadow-deep: var(--shadow-dark); 
+
+  --border-radius: 12px;
+}
+
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial;
+      margin: 0;
+      background: #2f3336;
+      color: var(--color-text-light);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    /* Lock Screen (Modernisé) */
+    #lockScreen {
+      display: flex;
+      background: #2f3336 !important;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+#accessCodeInput {
+  /* Rend le curseur de saisie invisible */
+  caret-color: transparent !important; 
+}
+    .lockCard {
+      
+      max-width: 350px !important;
+      width: 90% !important;
+      margin: 50px auto !important; 
+      padding: 20px;
+      background: #2f3336 !important;
+      padding: 50px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-deep);
+      text-align: center;
+      border: 1px solid var(--color-border);
+    }
+    .lockCard h2 {
+      margin: 0 0 10px 0;
+      color: var(--color-primary);
+      font-size: 30px;
+      font-weight: 700;
+    }
+    .lockCard p {
+      color: var(--color-text-muted);
+      margin-bottom: 30px;
+    }
+    #accessCode {
+      width: 100%;
+      padding: 18px;
+      font-size: 28px;
+      text-align: center;
+      border: 2px solid var(--color-border);
+      border-radius: var(--border-radius);
+      letter-spacing: 12px;
+      font-weight: bold;
+      background: #2f3336;
+      color: var(--color-primary);
+      transition: all 0.3s;
+    }
+    #accessCode:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.3);
+    }
+    #codeError {
+      color: var(--color-danger);
+      margin-top: 20px;
+      display: none;
+      font-weight: 600;
+    }
+
+    /* App Container */
+    .app {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+    .header {
+      background: #2f3336;
+      padding: 30px;
+      margin-bottom: 30px;
+          }
+    .header h1 {
+      margin: 0 0 5px 0;
+      color: var(--color-primary);
+      font-size: 36px;
+      font-weight: 800;
+    }
+    .header .subtitle {
+      color: var(--color-text-muted);
+      font-size: 16px;
+    }
+ .card {
+  background: #2f3336;
+  padding: 25px;
+  border-radius: var(--border-radius);
+  /* Applique le relief Neumorphic */
+  box-shadow: var(--shadow-light), var(--shadow-dark); 
+  margin-bottom: 25px;
+  /* Supprime l'ancienne bordure */
+  border: none;
+}
+    .card-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 20px 0;
+      color: var(--color-text-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Form */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    /* Ajout du coût */
+    .cost-input-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      grid-column: 4 / 5;
+    }
+    .cost-input-group > * {
+      grid-column: span 1;
+    }
+
+    input, select, textarea {
+      padding: 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s;
+      background: #2f3336;
+      color: var(--color-text-light);
+      font-family: inherit;
+    }
+    input::placeholder, textarea::placeholder {
+      color: var(--color-text-muted);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+      background: #2f3336;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      grid-column: 1 / -1;
+    }
+    select {
+      appearance: none;
+      background: #2f3336 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23a0a0a0" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 12px center;
+      background-size: 18px;
+      padding-right: 35px;
+    }
+
+    /* Buttons */
+
+.btn {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 10px; /* Coins arrondis Neumorphic */
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s ease; /* Fluidité augmentée pour éviter le clignotement */
+  /* Remplace l'ancienne ombre simple par l'ombre Neumorphic par défaut */
+  box-shadow: var(--shadow-light), var(--shadow-dark); 
+}
+
+.btn:focus {
+    outline: none !important;
+}
+.btn:active {
+    /* Effet "pressé" (enfoncé) au clic */
+    box-shadow: var(--shadow-inset) !important;
+    transform: scale(0.98);
+}
+
+
+/* ---------------------------------- */
+/* 4a. Bouton Principal (Vert Vif - Ajouter/Valider) */
+/* ---------------------------------- */
+.btn-primary {
+  background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
+              0 0 12px rgba(92, 255, 148, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45),
+              0 0 18px rgba(92, 255, 148, 0.55);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35),
+              0 0 8px rgba(92, 255, 148, 0.4);
+}
+
+/* ---------------------------------- */
+/* 4b. Bouton Secondaire (Gris - Modifier/Annuler/Sauvegarder) */
+/* ---------------------------------- */
+.btn-secondary, .edit-btn {
+    /* FORCE LE GRIS (Résout le problème du vert) */
+    background: linear-gradient(145deg, #3A3E46, #303339) !important;
+    color: var(--color-text-light);
+    /* Rétablit l'ombre Neumorphic par défaut */
+    box-shadow: var(--shadow-light), var(--shadow-dark) !important;
+}
+.btn-secondary:hover, .edit-btn:hover {
+    /* NE S'ASSOMBRIT PAS et a un zoom/mouvement doux */
+    background: linear-gradient(145deg, #3A3E46, #303339) !important; /* Répète le dégradé pour ne pas assombrir */
+    transform: translateY(-1px);
+    /* PAS DE HALO LUMINEUX (Ombre foncée subtile uniquement) */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), -4px -4px 10px rgba(44, 47, 54, 0.0) !important;
+}
+
+
+/* ---------------------------------- */
+/* 4c. Bouton Succès (GRIS - Terminé) */
+/* ---------------------------------- */
+.btn-success {
+    /* FORCE LE GRIS (Si vous voulez que Terminé soit gris) */
+    background: linear-gradient(145deg, #3A3E46, #303339) !important; 
+    color: white;
+    box-shadow: var(--shadow-light), var(--shadow-dark) !important;
+}
+.btn-success:hover {
+    /* NE S'ASSOMBRIT PAS et utilise le zoom */
+    background: linear-gradient(145deg, #3A3E46, #303339) !important;
+    transform: scale(1.03);
+    /* PAS DE HALO LUMINEUX */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), -4px -4px 10px rgba(44, 47, 54, 0.0) !important;
+}
+
+
+/* ---------------------------------- */
+/* 4d. Bouton Danger (Rouge - Supprimer) */
+/* ---------------------------------- */
+.btn-danger {
+    /* DÉGRADÉ ROUGE (Rétabli) */
+    background: linear-gradient(145deg, var(--color-danger), #CC3A3A) !important;
+    color: white;
+}
+.btn-danger:hover {
+    /* Garde le dégradé et ajoute le zoom + halo lumineux */
+    background: linear-gradient(145deg, var(--color-danger), #CC3A3A) !important; 
+    transform: scale(1.03);
+     
+}
+
+
+.btn-small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+    /* Categories */
+    .category-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 15px;
+    }
+    .category-item {
+      background: #2f3336;
+      padding: 10px 18px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--color-border);
+      font-size: 14px;
+    }
+    .category-color {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Tasks List */
+    .task-item {
+      background: #2f3336;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      border-left: 5px solid;
+      transition: all 0.3s;
+      box-shadow: var(--shadow-soft);
+    }
+    .task-item:hover {
+      background: #282833;
+    }
+    .task-item.completed {
+      opacity: 0.8;
+      border-left-color: var(--color-success) !important;
+      background: #1a2228;
+    }
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .task-details {
+      flex-grow: 1;
+    }
+    .task-title {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--color-text-light);
+      margin-bottom: 5px;
+    }
+    .task-title.completed {
+      text-decoration: line-through;
+      color: var(--color-success);
+    }
+    .task-dates {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .task-desc {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+      border-left: 2px solid var(--color-border);
+      padding-left: 10px;
+    }
+    .task-cost-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-right: 10px;
+    }
+    .task-category-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .task-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      border-top: 1px solid var(--color-border);
+      padding-top: 15px;
+    }
+
+    /* Status */
+    .status-bar {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+    .status-info {
+      background: var(--color-card-dark);
+      padding: 15px 25px;
+      border-radius: var(--border-radius);
+      font-size: 14px;
+      color: var(--color-text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--color-border);
+    }
+    /* Coût Total */
+    .cost-total-card {
+      background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
+      color: white;
+      padding: 15px 25px;
+      border-radius: var(--border-radius);
+      font-weight: 700;
+      text-align: center;
+      box-shadow: var(--shadow-deep);
+      border: 1px solid var(--color-primary-dark);
+    }
+    .cost-total-card h3 {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .cost-total-card p {
+      margin: 0;
+      font-size: 24px;
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-success);
+      margin-right: 10px;
+      box-shadow: 0 0 access5px var(--color-success);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Utilities */
+    .text-muted { color: var(--color-text-muted); font-size: 14px; }
+    .mt-4 { margin-top: 20px; }
+    .mb-3 { margin-bottom: 15px; }
+    .edit-mode-notice {
+      background: #2a2215;
+      color: var(--color-warning);
+      padding: 12px 18px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-weight: 600;
+      border: 1px solid #7c5a2c;
+    }
+
+    /* ----------------------------------------------------
+     * Gantt Chart
+     * ----------------------------------------------------
+     */
+    .gantt-container {
+      background: #2f3336;
+      border-radius: 10px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--color-border);
+      position: relative;
+    }
+    .gantt-year-header {
+      background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
+      color: white;
+      padding: 18px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 18px;
+      border-radius: 10px 10px 0 0;
+      letter-spacing: 1px;
+    }
+    .gantt-months-row {
+      display: flex;
+      background: #22222a;
+      border-left: 1px solid #444;
+      border-right: 1px solid #444;
+      min-width: fit-content;
+      font-size: 13px;
+    }
+    .gantt-month-cell {
+      text-align: center;
+      padding: 10px 5px;
+      font-weight: 600;
+      color: var(--color-text-light);
+      border-right: 1px solid #444;
+      background: #22222a;
+      min-width: 100px;
+    }
+    .gantt-grid {
+      display: grid;
+      gap: 0;
+      background: #2f3336;
+      border: 1px solid var(--color-border);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      overflow: hidden;
+      min-width: fit-content;
+      position: relative;
+    }
+    .gantt-header {
+      background: var(--color-card-dark);
+      padding: 15px 12px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--color-text-light);
+      border-right: 1px solid var(--color-border);
+      border-bottom: 2px solid var(--color-primary-dark);
+      z-index: 20;
+      position: relative;
+    }
+    .gantt-day-header {
+      background: #2f3336;
+      padding: 10px 4px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      border-right: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+      min-width: 50px;
+      position: relative;
+    }
+    .gantt-day-header.today {
+        background: #2a1a1a;
+        color: var(--color-danger);
+    }
+    .gantt-category-cell {
+      display: flex;
+      align-items: center;
+      align-self: stretch;
+      padding: 15px 12px;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--color-text-light);
+      border-right: 1px solid var(--color-border);
+      border-bottom: 1px solid #222;
+      background: #16161c;
+    }
+    .gantt-task-name {
+      padding: 15px 12px;
+      font-weight: 500;
+      color: var(--color-text-light);
+      border-right: 1px solid var(--color-border);
+      border-bottom: 1px solid #222;
+      background: #2f3336;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .gantt-task-name:hover {
+      background: #282833;
+    }
+    .gantt-task-name.completed {
+      text-decoration: line-through;
+      color: var(--color-success);
+    }
+    .gantt-cell {
+      border-right: 1px solid var(--color-border);
+      border-bottom: 1px solid #222;
+      background: #2f3336;
+      position: relative;
+      min-height: 45px;
+    }
+    .gantt-bar {
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 4px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      transition: transform 0.2s;
+      min-width: 10px;
+    }
+    .gantt-bar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+    }
+    /* La ligne rouge "Aujourd'hui" */
+    .gantt-today-line {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--color-danger);
+        z-index: 10;
+        pointer-events: none;
+    }
+
+
+
+/* ==================================================== */
+/* 2. STYLE DES CHAMPS DE SAISIE (EFFET ENFONCÉ) */
+/* ==================================================== */
+
+input, select, textarea {
+    background: #2f3336; /* Même couleur que le fond */
+    color: var(--color-text-light);
+    border: none; /* Très important: retire la bordure standard */
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%; /* Assure qu'ils prennent toute la largeur du conteneur */
+    
+    /* Utilise l'ombre 'inset' pour l'effet enfoncé */
+    box-shadow: var(--shadow-inset);
+    transition: border 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none; /* Supprime la surbrillance par défaut du navigateur */
+    border: none; /* Supprime toute bordure additionnelle */
+    
+    /* Optionnel : On peut ajouter une petite ombre autour du champ au focus */
+    /* box-shadow: var(--shadow-inset), 0 0 5px rgba(52, 211, 153, 0.5); */
+}
+/* Supprime la surbrillance au focus pour les boutons et liens cliquables */
+button:focus, .button:focus, a:focus, .category-btn:focus {
+    outline: none;
+}
+    /* ============================================
+     * RESPONSIVE DESIGN - MOBILE
+     * ============================================ */
+    @media (max-width: 768px) {
+      /* Lock Screen Mobile */
+      .lockCard {
+        padding: 30px 20px;
+      }
+      .lockCard h2 {
+        font-size: 24px;
+      }
+      #accessCode {
+        font-size: 24px;
+        padding: 14px;
+        letter-spacing: 8px;
+      }
+
+      /* App Container Mobile */
+      .app {
+        padding: 15px;
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+      }
+
+      /* Header Mobile */
+      .header {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+        width: 100%;
+      }
+      .header h1 {
+        font-size: 24px;
+      }
+      .header .subtitle {
+        font-size: 14px;
+      }
+
+      /* Card Mobile */
+      .card {
+        padding: 15px;
+        margin-bottom: 15px;
+        width: 100%;
+        max-width: 100%;
+        overflow: visible;
+      }
+      .card-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        word-break: break-word;
+      }
+
+      /* Status Bar Mobile - Empilé verticalement */
+      .status-bar {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      .status-info {
+        padding: 12px 15px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+      .cost-total-card {
+        grid-column: 1 / 2 !important;
+        padding: 12px 15px;
+      }
+      .cost-total-card p {
+        font-size: 20px;
+      }
+
+      /* Form Mobile - Empilé verticalement */
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .cost-input-group {
+        grid-column: 1 / 2 !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      /* Inputs Mobile */
+      input, select, textarea {
+        padding: 12px;
+        font-size: 16px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      textarea {
+        min-height: 80px;
+        width: 100%;
+      }
+      select {
+        width: 100%;
+      }
+
+      /* Buttons Mobile */
+      .btn {
+        padding: 12px 20px;
+        font-size: 15px;
+        width: 100%;
+      }
+      .btn-small {
+        padding: 8px 14px;
+        font-size: 13px;
+        width: auto;
+      }
+
+      /* Category List Mobile */
+      .category-list {
+        gap: 8px;
+      }
+      .category-item {
+        padding: 8px 12px;
+        font-size: 13px;
+        flex-wrap: wrap;
+      }
+
+      /* Tasks Mobile - FIX COMPLET */
+      .task-item {
+        padding: 12px;
+        margin-bottom: 12px;
+        border-left-width: 4px;
+      }
+      .task-header {
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .task-details {
+        width: 100%;
+      }
+      .task-dates {
+        text-align: left;
+        font-size: 12px;
+        width: 100%;
+      }
+      .task-title {
+        font-size: 15px;
+        line-height: 1.4;
+        word-break: break-word;
+      }
+      .task-desc {
+        font-size: 13px;
+        margin-top: 8px;
+        padding-left: 8px;
+        word-break: break-word;
+      }
+      .task-cost-badge {
+        font-size: 11px;
+        padding: 4px 8px;
+        margin-right: 6px;
+        display: inline-block;
+        margin-top: 6px;
+      }
+      .task-category-badge {
+        font-size: 10px;
+        padding: 4px 8px;
+        margin-top: 6px;
+        display: inline-block;
+      }
+      .task-actions {
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+      .task-actions .btn {
+        width: 100%;
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+
+      /* Gantt Mobile - FIX COMPLET */
+      #ganttWrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -15px;
+        padding: 0 15px;
+      }
+      
+      .gantt-container {
+        min-width: 100%;
+        border-radius: 8px;
+      }
+      
+      .gantt-year-header {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 8px 8px 0 0;
+      }
+      
+      .gantt-months-row {
+        font-size: 10px;
+      }
+      
+      .gantt-month-cell {
+        min-width: 40px !important;
+        width: 40px !important;
+        padding: 6px 2px;
+        font-size: 9px;
+        word-break: break-word;
+      }
+      
+      .gantt-header {
+        padding: 8px 4px;
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .gantt-day-header {
+        min-width: 25px !important;
+        padding: 6px 2px;
+        font-size: 9px;
+      }
+      
+      .gantt-category-cell {
+        padding: 8px 4px;
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 80px;
+      }
+      
+      .gantt-task-name {
+        padding: 8px 4px;
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 120px;
+      }
+      
+      .gantt-cell {
+        min-height: 35px;
+        min-width: 25px !important;
+      }
+      
+      .gantt-bar {
+        font-size: 0;
+        top: 6px;
+        bottom: 6px;
+        left: 2px;
+        min-width: 8px;
+      }
+      
+      .gantt-today-line {
+        width: 2px;
+      }
+
+      /* Edit Mode Notice Mobile */
+      .edit-mode-notice {
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+    }
+
+    /* Très petits écrans */
+    @media (max-width: 480px) {
+      .app {
+        padding: 10px;
+      }
+      
+      .header {
+        padding: 15px 10px;
+      }
+      
+      .header h1 {
+        font-size: 20px;
+      }
+      
+      .card {
+        padding: 12px;
+      }
+      
+      .card-title {
+        font-size: 16px;
+      }
+      
+      .cost-total-card p {
+        font-size: 18px;
+      }
+      
+      .task-item {
+        padding: 10px;
+      }
+      
+      .task-title {
+        font-size: 14px;
+      }
+      
+      .gantt-day-header {
+        min-width: 20px !important;
+        font-size: 8px;
+      }
+      
+      .gantt-month-cell {
+        min-width: 35px !important;
+        width: 35px !important;
+        font-size: 8px;
+      }
+      
+      .gantt-category-cell {
+        min-width: 60px;
+        font-size: 10px;
+      }
+      
+      .gantt-task-name {
+        min-width: 100px;
+        font-size: 10px;
+      }
+      
+      .gantt-cell {
+        min-width: 20px !important;
+      }
+    }
+
+/* ==================================================== */
+/* SUPPRESSION DE L'ENCADREMENT VIOLET AU FOCUS/CLIC */
+/* ==================================================== */
+
+/* Cible tous les éléments HTML au moment où ils sont en focus */
+*:focus {
+    outline: none !important;
+}
+
+/* Cible les éléments interactifs spécifiques pour éliminer toute bordure héritée */
+button:focus, 
+input:focus, 
+select:focus, 
+textarea:focus, 
+a:focus,
+.category-btn:focus,
+.task-item:focus {
+    /* Supprime la bordure par défaut et les bordures héritées */
+    border: none !important; 
+    
+    /* Assurez-vous que l'ombre Neumorphic est la seule chose visible au focus */
+    box-shadow: var(--shadow-inset) !important;
+}
+/* ==================================================== */
+/* CORRECTION DES BOUTONS (DÉGRADÉ + SUPPRESSION VIOLET) */
+/* ==================================================== */
+
+/* Applique le style par défaut (Dégradé Vert + Relief Neumorphic) */
+button, .button, .category-btn { 
+    /* Ceci est la règle du DÉGRADÉ */
+    background: linear-gradient(145deg, var(--color-primary), var(--color-primary-dark)) !important; 
+    color: var(--color-text-light);
+    border: none !important; 
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    /* Ombre de relief Neumorphic */
+    box-shadow: var(--shadow-light), var(--shadow-dark) !important;
+}
+
+
+    
+    /* SUPPRIME TOUTE FORME D'OMBRE OU DE BORDURE VIOLETTE */
+    border: none !important;
+    outline: none !important;
+    
+    /* On garde l'ombre Neumorphic, mais on la rend légèrement plus discrète */
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3), -4px -4px 8px rgba(255, 255, 255, 0.03) !important; 
+}
+
+/* ==================================================== */
+/* STYLE DU LOGO IMAGE */
+/* ==================================================== */
+
+/* Logo pour l'écran de verrouillage (centré) */
+#lockLogo {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+
+  display: block;
+  margin: 0 auto 20px auto;
+
+  object-fit: contain;
+}
+.lockCard img {
+  max-width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+}
+
+/* Logo pour l'en-tête principal (Haut à Gauche) */
+.app-header-logo {
+height: 200px !important;
+width: auto;
+display: block;
+}
+@media (max-width: 768px) {
+.app-header-logo {
+height: 30px;
+}
+}
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+ <div id="lockScreen">
+  <div class="lockCard">
+
+    <img src="logo_arbre.png" alt="Logo de l'application" id="lockLogo">
+
+    <p>Bienvenue. Entrez votre code de sécurité.</p>
+
+    <input id="accessCode" type="password" placeholder="••••" maxlength="4" autocomplete="off" />
+
+    <button id="validateButton" class="btn btn-primary mt-4">Valider l'Accès</button>
+
+    <p id="codeError">❌ Code Incorrect. Veuillez réessayer.</p>
+    
+  </div>
+</div>
+
+  <div id="appContainer" style="display:none;">
+    <div class="app">
+      <div class="header">
+        <img src="logo_arbre.png" alt="Logo de l'application" class="app-header-logo">
+             </div>
+
+      <div class="status-bar">
+        <div class="status-info">
+          <div>
+            <span class="status-indicator"></span>
+            <span id="statusText">Prêt pour la planification</span>
+          </div>
+          <button class="btn btn-secondary btn-small" onclick="manualSync()">💾 Sauvegarder</button>
+        </div>
+        
+        <div id="costTotalCard" class="cost-total-card" style="grid-column: 2 / 4;">
+          <h3>COÛT TOTAL</h3>
+          <p id="totalCostDisplay">0,00 €</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">🏷️ Gestion des Catégories</h2>
+        <div class="form-row">
+          <input type="text" id="categoryName" placeholder="Nom de la nouvelle catégorie" style="flex-grow: 1;" />
+          <button class="btn btn-primary" onclick="addCategory()">+ Ajouter</button>
+        </div>
+        <div id="categoriesList" class="category-list"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title" id="formTitle">🚀 Créer une Nouvelle Tâche</h2>
+        <div id="editModeNotice" class="edit-mode-notice" style="display:none;">
+          ✏️ **Mode Édition Actif** - Modifiez les informations ci-dessous et cliquez sur "Mettre à jour".
+        </div>
+        <div class="form-grid">
+          <input type="text" id="taskName" placeholder="Titre de la tâche (ex: Refactoriser le module)" />
+          <input type="date" id="taskStart" title="Date de début" />
+          <input type="date" id="taskEnd" title="Date de fin" />
+          
+          <div class="cost-input-group" style="grid-column: 4 / 5;">
+            <input type="number" step="0.01" id="taskCost" placeholder="Coût (€)" title="Coût estimé en euros" value="0" min="0" />
+            <select id="taskCategory" title="Catégorie de la tâche">
+              <option value="">— Sans catégorie —</option>
+            </select>
+          </div>
+        </div>
+        <textarea id="taskDesc" placeholder="Description détaillée (facultatif)"></textarea>
+        <div class="form-row">
+        <button class="btn btn-primary" id="submitBtn" onclick="addTask()">
+  <span style="color: white; filter: grayscale(1) brightness(2);">➕</span> 
+  <span style="color: white;">Ajouter la tâche</span>
+</button>
+          <button class="btn btn-secondary" id="cancelBtn" style="display:none;" onclick="cancelEdit()">Annuler</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">📋 Liste des Tâches Actives</h2>
+        <div id="tasksList"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">📊 Visualisation Gantt</h2>
+        <p class="text-muted mb-3">Cliquez sur une barre dans le diagramme pour marquer la tâche comme terminée.</p>
+        <div id="ganttWrapper" style="overflow-x: auto;">
+          <div id="ganttContainer" class="gantt-container" style="border: none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============= CONFIGURATION =============
+    const MASTER_CODE = "0508";
+    const TASK_COLORS = [
+      '#8b5cf6', // Violet
+      '#06b6d4', // Cyan
+      '#f97316', // Orange
+      '#ec4899', // Rose
+      '#3b82f6', // Bleu
+      '#a855f7', // Pourpre
+      '#ef4444', // Rouge
+      '#f59e0b', // Ambre 
+    ];
+
+    // ============= GLOBAL STATE =============
+    let tasks = [];
+    let categories = [];
+    let colorIndex = 0;
+    let editingTaskId = null;
+
+// ============= ⚙️ FIREBASE CONFIGURATION (VOS CLÉS À REMPLACER) ⚙️ =============
+let app, db;
+let DOC_ID = "main_planner_data"; 
+
+const firebaseConfig = {
+ apiKey: "AIzaSyCLQL4JYQ795ce953nNBTZPL34eE3GHMbw",
+  authDomain: "terongis-planner.firebaseapp.com",
+  projectId: "terongis-planner",
+  storageBucket: "terongis-planner.firebasestorage.app",
+  messagingSenderId: "251343124662",
+  appId: "1:251343124662:web:8f09619f48b488ad6a8e17"
+};
+
+
+// Fonction qui affiche le statut de connexion dans l'UI (à adapter si votre id est différent)
+function updateStatus(text) {
+  const statusEl = document.getElementById("statusText"); 
+  if (statusEl) {
+    statusEl.innerHTML = text;
+  } else {
+    console.log(`[STATUS] ${text}`);
+  }
+}
+
+try {
+    app = firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    updateStatus("Connexion au Cloud...");
+} catch(e) {
+    console.error("Erreur d'initialisation Firebase. Vérifiez la console:", e);
+    updateStatus("Erreur : Firebase non initialisé. Données locales seulement.");
+}
+
+// ============= ☁️ SYNCHRONIZATION CLOUD (ENVOI) ☁️ =============
+function saveToCloud() {
+  if (!db) return; 
+    
+  const dataToSave = {
+    // Les variables globales que vous voulez synchroniser
+    tasks: tasks, 
+    categories: categories,
+    colorIndex: colorIndex,
+    lastUpdated: new Date().toISOString()
+  };
+
+  db.collection("planners").doc(DOC_ID).set(dataToSave)
+    .catch((error) => {
+      updateStatus(`Erreur de sauvegarde Cloud : ${error.message}`);
+      console.error("Erreur d'écriture sur Firestore: ", error);
+    });
+}
+
+// ============= 🌩️ SYNCHRONIZATION CLOUD (RÉCEPTION EN TEMPS RÉEL) 🌩️ =============
+function loadFromCloud() {
+  if (!db) return updateStatus("Erreur : Firebase non initialisé.");
+    
+  db.collection("planners").doc(DOC_ID).onSnapshot((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      
+      // Mise à jour des variables globales
+      tasks = data.tasks || [];
+      categories = data.categories || [];
+      colorIndex = data.colorIndex || 0;
+      
+      // Appel des fonctions de rendu de l'UI (Vos fonctions originales)
+      renderCategories();
+      updateCategorySelect();
+      renderTasks();
+      renderGantt(); 
+      updateTotalCostDisplay();
+      
+      const lastUpdate = new Date(data.lastUpdated).toLocaleTimeString('fr-FR');
+      updateStatus(`Synchronisé avec le Cloud. Dernière Maj : ${lastUpdate}`);
+    } else {
+      console.log("Aucune donnée Cloud trouvée. Création du document initial.");
+      saveToCloud(); 
+      updateStatus("Initialisé sur le Cloud. Prêt.");
+    }
+  }, (error) => {
+    updateStatus(`Erreur de connexion Cloud : ${error.message}`);
+    console.error("Erreur d'écoute Firestore: ", error);
+  });
+}
+
+    // ============= LOCK SCREEN =============
+    document.getElementById("accessCode").addEventListener("input", function(e) {
+      const code = e.target.value;
+      if (code.length === 4) {
+        checkAccess();
+      }
+    });
+
+    document.getElementById("accessCode").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        checkAccess();
+      }
+    });
+
+    document.getElementById("validateButton").addEventListener("click", function() {
+      checkAccess();
+    });
+
+function checkAccess() {
+  const code = document.getElementById("accessCode").value;
+  
+  if (code === MASTER_CODE) {
+    
+    // 1. D'ABORD, AFFICHER L'APPLICATION (Ceci doit être la première instruction qui modifie l'UI)
+    document.getElementById("lockScreen").style.display = "none";
+    document.getElementById("appContainer").style.display = "block";
+      
+    // 2. RENDU INITIAL AVEC LES DONNÉES ACTUELLES
+    // Ceci s'assure que l'interface n'est pas vide avant que le Cloud ne réponde.
+    if (typeof renderTasks === 'function') {
+        renderCategories();
+        updateCategorySelect();
+        renderTasks();
+        renderGantt(); 
+        updateTotalCostDisplay();
+    }
+    
+    // 3. DÉMARRER LA SYNCHRONISATION CLOUD
+    if (typeof loadFromCloud === 'function') {
+        loadFromCloud(); 
+        updateStatus("Synchronisation Cloud en cours...");
+    } else {
+        updateStatus("⚠️ Cloud non connecté. Données locales seulement.");
+        console.error("Erreur: La fonction loadFromCloud n'a pas été trouvée.");
+    }
+    
+  } else {
+    const errorEl = document.getElementById("codeError");
+    errorEl.style.display = "block";
+    document.getElementById("accessCode").value = "";
+    setTimeout(() => { errorEl.style.display = "none"; }, 2500);
+  }
+}
+    // ============= CATEGORY MANAGEMENT =============
+    function addCategory() {
+      const name = document.getElementById("categoryName").value.trim();
+      if (!name) {
+        alert("Veuillez entrer un nom de catégorie.");
+        return;
+      }
+      if (categories.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+        alert("Cette catégorie existe déjà.");
+        return;
+      }
+      
+      const category = {
+        id: Date.now().toString(),
+        name,
+        color: TASK_COLORS[categories.length % TASK_COLORS.length],
+        createdAt: new Date().toISOString()
+      };
+      categories.push(category);
+      document.getElementById("categoryName").value = "";
+      saveToCloud();
+      renderCategories();
+      updateCategorySelect();
+      updateStatus(`Catégorie "${name}" ajoutée.`);
+    }
+
+    function deleteCategory(id) {
+      if (!confirm("Supprimer cette catégorie ? Les tâches associées garderont leur couleur unique.")) return;
+      const categoryName = categories.find(c => c.id === id)?.name || "Catégorie";
+      categories = categories.filter(c => c.id !== id);
+      saveToCloud();
+      renderCategories();
+      updateCategorySelect();
+      renderTasks();
+      renderGantt();
+      updateStatus(`${categoryName} supprimée.`);
+    }
+
+    function renderCategories() {
+      const container = document.getElementById("categoriesList");
+      if (categories.length === 0) {
+        container.innerHTML = '<p class="text-muted">Aucune catégorie n\'est définie. Ajoutez-en pour organiser vos projets.</p>';
+        return;
+      }
+      container.innerHTML = categories.map(cat => `
+        <div class="category-item">
+          <div class="category-color" style="background: ${cat.color};"></div>
+          <span>${cat.name}</span>
+          <button class="btn btn-danger btn-small" onclick="deleteCategory('${cat.id}')">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function updateCategorySelect() {
+      const select = document.getElementById("taskCategory");
+      select.innerHTML = '<option value="">— Sans catégorie —</option>' +
+        categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+    }
+
+    // ============= TASK MANAGEMENT (Coût Ajouté) =============
+    function addTask() {
+      const name = document.getElementById("taskName").value.trim();
+      const start = document.getElementById("taskStart").value;
+      const end = document.getElementById("taskEnd").value;
+      const desc = document.getElementById("taskDesc").value.trim();
+      const categoryId = document.getElementById("taskCategory").value;
+      const cost = parseFloat(document.getElementById("taskCost").value) || 0;
+
+      if (!name) {
+        alert("Tu as oublié le nom de la tâche.");
+        return;
+      }
+
+     if (editingTaskId) {
+    // Si vous modifiez, assurez-vous que la fonction updateTask() gère l'enregistrement.
+    updateTask(); 
+  } else {
+    const color = TASK_COLORS[colorIndex % TASK_COLORS.length];
+    colorIndex++;
+
+    const task = {
+      id: Date.now().toString(),
+      name,
+      start, // 'start' peut être vide
+      end,   // 'end' peut être vide
+      desc,
+      categoryId,
+      cost,
+      color,
+      completed: false,
+      createdAt: new Date().toISOString()
+    };
+
+    tasks.push(task);
+    saveToCloud();
+    updateStatus(`Tâche "${name}" ajoutée.`);
+    clearForm();
+    renderTasks();
+    renderGantt();
+    updateTotalCostDisplay();
+  }
+}
+
+    function updateTask() {
+      const name = document.getElementById("taskName").value.trim();
+      const start = document.getElementById("taskStart").value;
+      const end = document.getElementById("taskEnd").value;
+      const desc = document.getElementById("taskDesc").value.trim();
+      const categoryId = document.getElementById("taskCategory").value;
+      const cost = parseFloat(document.getElementById("taskCost").value) || 0;
+
+      if (!name) {
+        alert("Veuillez remplir tous les champs obligatoires");
+        return;
+      }
+
+      if (start && end && new Date(start) > new Date(end)) {
+    alert("La date de début doit être avant ou égale à la date de fin.");
+    return;
+}
+
+      const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
+      if (taskIndex === -1) return;
+
+      tasks[taskIndex] = {
+        ...tasks[taskIndex],
+        name,
+        start,
+        end,
+        desc,
+        categoryId,
+        cost
+      };
+
+      saveToCloud();
+      updateStatus(`Tâche "${name}" mise à jour.`);
+      clearForm();
+      renderTasks();
+      renderGantt();
+      updateTotalCostDisplay();
+    }
+
+    function editTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      editingTaskId = id;
+      document.getElementById("taskName").value = task.name;
+      document.getElementById("taskStart").value = task.start;
+      document.getElementById("taskEnd").value = task.end;
+      document.getElementById("taskDesc").value = task.desc || "";
+      document.getElementById("taskCategory").value = task.categoryId || "";
+      document.getElementById("taskCost").value = (task.cost !== undefined) ? task.cost : 0;
+
+      document.getElementById("formTitle").innerHTML = "✏️ Modifier la Tâche : **" + task.name + "**";
+      document.getElementById("submitBtn").textContent = "Mettre à jour la tâche";
+      document.getElementById("cancelBtn").style.display = "inline-block";
+      document.getElementById("editModeNotice").style.display = "block";
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      updateStatus("Mode édition activé.");
+    }
+
+    function cancelEdit() {
+      clearForm();
+      updateStatus("Édition annulée.");
+    }
+
+    function clearForm() {
+      editingTaskId = null;
+      document.getElementById("taskName").value = "";
+      document.getElementById("taskStart").value = "";
+      document.getElementById("taskEnd").value = "";
+      document.getElementById("taskDesc").value = "";
+      document.getElementById("taskCategory").value = "";
+      document.getElementById("taskCost").value = "0";
+      document.getElementById("formTitle").innerHTML = "🚀 Créer une Nouvelle Tâche";
+      document.getElementById("submitBtn").textContent = "➕ Ajouter la tâche";
+      document.getElementById("cancelBtn").style.display = "none";
+      document.getElementById("editModeNotice").style.display = "none";
+    }
+
+    function deleteTask(id) {
+      const taskName = tasks.find(t => t.id === id)?.name || "Tâche";
+      if (!confirm(`Êtes-vous sûr de vouloir supprimer la tâche "${taskName}" ?`)) return;
+      tasks = tasks.filter(t => t.id !== id);
+      saveToCloud();
+      renderTasks();
+      renderGantt();
+      updateTotalCostDisplay();
+      updateStatus(`${taskName} supprimée définitivement.`);
+      if(editingTaskId === id) clearForm();
+    }
+
+    function toggleTaskCompletion(id) {
+      const taskIndex = tasks.findIndex(t => t.id === id);
+      if (taskIndex === -1) return;
+
+      tasks[taskIndex].completed = !tasks[taskIndex].completed;
+      saveToCloud();
+      renderTasks();
+      renderGantt();
+      const statusText = tasks[taskIndex].completed ? 
+        `Tâche "${tasks[taskIndex].name}" marquée comme **terminée**! 🎉` : 
+        `Tâche "${tasks[taskIndex].name}" remise en **cours** 🔄`;
+      updateStatus(statusText);
+    }
+
+    // ============= COST LOGIC =============
+    function calculateTotalCost() {
+      return tasks.reduce((total, task) => total + (task.cost || 0), 0);
+    }
+
+    function formatCost(cost) {
+      return cost.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+    }
+
+    function updateTotalCostDisplay() {
+      const totalCost = calculateTotalCost();
+      document.getElementById("totalCostDisplay").textContent = formatCost(totalCost);
+    }
+
+    // ============= RENDERING =============
+    function renderTasks() {
+      const container = document.getElementById("tasksList");
+      const sortedTasks = [...tasks].sort((a, b) => new Date(a.start) - new Date(b.start));
+      
+      if (sortedTasks.length === 0) {
+        container.innerHTML = '<p class="text-muted">Aucune tâche pour le moment. Le plan est vide !</p>';
+        return;
+      }
+      
+      container.innerHTML = sortedTasks.map(task => {
+        const category = categories.find(c => c.id === task.categoryId);
+        const completedClass = task.completed ? 'completed' : '';
+        const borderColor = task.completed ? 'var(--color-success)' : task.color; 
+        const taskCost = formatCost(task.cost || 0);
+
+        return `
+          <div class="task-item ${completedClass}" style="border-left-color: ${borderColor};">
+            <div class="task-header">
+              <div class="task-details">
+                <div class="task-title ${completedClass}">${task.name}</div>
+                <div style="margin-top: 5px;">
+                  <span class="task-cost-badge">Coût: ${taskCost}</span>
+                  ${category ? `<span class="task-category-badge" style="background: ${category.color};">${category.name}</span>` : ''}
+                </div>
+              </div>
+              <div class="task-dates">
+                Début: ${formatDate(task.start)}<br>
+                Fin: ${formatDate(task.end)}
+              </div>
+            </div>
+            ${task.desc ? `<div class="task-desc">${task.desc}</div>` : ''}
+            
+            <div class="task-actions">
+              <button class="btn ${task.completed ? 'btn-success' : 'btn-secondary'} btn-small" onclick="toggleTaskCompletion('${task.id}')">
+                ${task.completed ? '✅ Terminé' : '⭕ Marquer terminé'}
+              </button>
+              <button class="btn btn-secondary btn-small" onclick="editTask('${task.id}')">✏️ Modifier</button>
+              <button class="btn btn-danger btn-small" onclick="deleteTask('${task.id}')">🗑️ Supprimer</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    // ============= GANTT CHART (Logique Stable + Responsive) =============
+    function renderGantt() {
+  const wrapper = document.getElementById("ganttWrapper");
+  const container = document.getElementById("ganttContainer");
+
+  // ✨ CHANGEMENT 1 : Créer le tableau filtré. 
+  // Inclut uniquement les tâches NON complétées ET ayant une date de début ET une date de fin.
+  const filteredTasks = tasks.filter(task => 
+      !task.completed && task.start && task.end
+  );
+  
+  // ✨ CHANGEMENT 2 : Utiliser le tableau filtré pour la vérification initiale
+  if (filteredTasks.length === 0) { 
+    container.innerHTML = '<p class="text-muted">Aucune tâche active (avec dates complètes) à afficher dans le diagramme de Gantt.</p>';
+    return;
+  }
+    
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // ✨ CHANGEMENT 3 : Utiliser le tableau filtré pour calculer la plage de dates
+  const allDates = filteredTasks.flatMap(t => [new Date(t.start), new Date(t.end)]);
+    
+  let minDate = allDates.length > 0 ? new Date(Math.min(...allDates)) : today;
+  let maxDate = allDates.length > 0 ? new Date(Math.max(...allDates)) : today;
+
+  minDate = new Date(Math.min(minDate.getTime(), today.getTime()));
+  maxDate = new Date(Math.max(maxDate.getTime(), today.getTime()));
+
+  minDate.setHours(0, 0, 0, 0);
+  maxDate.setHours(0, 0, 0, 0);
+    
+  const startRange = new Date(minDate);
+  startRange.setDate(startRange.getDate() - 7);
+    
+  const endRange = new Date(maxDate);
+  endRange.setDate(endRange.getDate() + 7);
+
+  startRange.setHours(0, 0, 0, 0);
+  endRange.setHours(0, 0, 0, 0);
+
+  const days = [];
+  const currentDate = new Date(startRange);
+    
+  while (currentDate.getTime() <= endRange.getTime()) {
+    days.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+    
+  const tasksByCategory = new Map();
+  const uncategorized = [];
+
+  // ✨ CHANGEMENT 4 : Utiliser le tableau filtré pour le tri et les boucles
+  filteredTasks.sort((a, b) => new Date(a.start) - new Date(b.start));
+
+  filteredTasks.forEach(task => {
+    if (task.categoryId) {
+      if (!tasksByCategory.has(task.categoryId)) {
+        tasksByCategory.set(task.categoryId, []);
+      }
+      tasksByCategory.get(task.categoryId).push(task);
+    } else {
+      uncategorized.push(task);
+    }
+  });
+      
+      const sortedCategories = categories.filter(c => tasksByCategory.has(c.id));
+      const allTasksRendered = [];
+      sortedCategories.forEach(cat => allTasksRendered.push(...tasksByCategory.get(cat.id)));
+      allTasksRendered.push(...uncategorized);
+      
+      // Responsive: adapter la taille des colonnes selon la largeur d'écran
+      const isMobile = window.innerWidth <= 768;
+      const dayWidth = isMobile ? 25 : 50;
+      const fixedColWidth = isMobile ? 200 : 350;
+      const monthWidth = isMobile ? 40 : 100;
+      
+      const totalColWidth = days.length * dayWidth;
+      const totalWidth = fixedColWidth + totalColWidth;
+      
+      let html = `<div class="gantt-container" style="min-width: ${totalWidth}px;">`;
+
+      const years = [...new Set(days.map(d => d.getFullYear()))];
+      const yearText = years.length > 1 ? years.join(' - ') : years[0];
+      html += `<div class="gantt-year-header" style="min-width: 100%;">${yearText}</div>`;
+
+      html += `<div style="display: flex; min-width: ${totalWidth}px;">`;
+        html += `<div style="min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444;"></div>`;
+        html += `<div class="gantt-months-row" style="flex-grow: 1;">`;
+        const monthMap = new Map();
+        days.forEach(day => {
+          const year = day.getFullYear();
+          const month = day.getMonth();
+          const key = `${year}-${month}`;
+          if (!monthMap.has(key)) {
+            monthMap.set(key, { year, month, days: [] });
+          }
+          monthMap.get(key).days.push(day);
+        });
+
+        monthMap.forEach(({ year, month, days: monthDays }) => {
+          const monthName = new Date(year, month).toLocaleDateString('fr-FR', { month: 'long' });
+          const width = monthDays.length * dayWidth;
+          const displayName = isMobile ? monthName.substring(0, 3) : monthName.charAt(0).toUpperCase() + monthName.slice(1);
+          html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px;">${displayName}</div>`;
+        });
+        html += `</div>`;
+      html += `</div>`;
+
+
+      const rowCount = allTasksRendered.length;
+      let gridTemplate = `grid-template-rows: repeat(${rowCount}, auto);`;
+      const catColWidth = isMobile ? 80 : 150;
+      const taskColWidth = isMobile ? 120 : 200;
+      let gridColumns = `grid-template-columns: ${catColWidth}px ${taskColWidth}px repeat(${days.length}, ${dayWidth}px);`;
+
+      html += `<div class="gantt-grid" style="${gridTemplate} ${gridColumns}; min-width: ${totalWidth}px;">`;
+
+      html += `<div class="gantt-header">Catégorie</div>`;
+      html += `<div class="gantt-header">Tâche</div>`;
+      days.forEach(day => {
+        const isToday = day.toDateString() === today.toDateString();
+        const todayClass = isToday ? 'today' : '';
+        html += `<div class="gantt-day-header ${todayClass}" style="min-width: ${dayWidth}px;">${day.getDate()}</div>`;
+      });
+      
+      let renderedCategoryIds = new Set();
+      let renderedUncategorizedHeader = false;
+
+      allTasksRendered.forEach((task) => {
+          const category = categories.find(c => c.id === task.categoryId);
+          
+          if (category && !renderedCategoryIds.has(category.id)) {
+              const catTasksCount = tasksByCategory.get(category.id).length;
+              const catName = isMobile && category.name.length > 8 ? category.name.substring(0, 8) + '...' : category.name;
+              html += `<div class="gantt-category-cell" style="grid-row: span ${catTasksCount}; border-left: 5px solid ${category.color};">${catName}</div>`;
+              renderedCategoryIds.add(category.id);
+          } else if (!category && !renderedUncategorizedHeader) {
+              const uncategorizedCount = uncategorized.length;
+              const label = isMobile ? 'Sans Cat.' : 'Sans Catégorie';
+              html += `<div class="gantt-category-cell" style="grid-row: span ${uncategorizedCount}; border-left: 5px solid #6b7280;">${label}</div>`;
+              renderedUncategorizedHeader = true;
+          }
+
+          const completedClass = task.completed ? 'completed' : '';
+          const taskName = isMobile && task.name.length > 15 ? task.name.substring(0, 15) + '...' : task.name;
+          html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompletion('${task.id}')" title="${task.name} (${task.start} à ${task.end})">${taskName}</div>`;
+
+          const taskStart = new Date(task.start);
+          taskStart.setHours(0, 0, 0, 0); 
+          
+          const taskEnd = new Date(task.end);
+          taskEnd.setHours(0, 0, 0, 0); 
+
+          let taskStartCol = -1;
+          let taskSpan = 0;
+          
+          days.forEach((day, dayIdx) => {
+            const dayNoTime = new Date(day);
+            dayNoTime.setHours(0, 0, 0, 0);
+            
+            if (dayNoTime.getTime() === taskStart.getTime()) {
+              taskStartCol = dayIdx;
+            }
+            
+            if (dayNoTime.getTime() >= taskStart.getTime() && dayNoTime.getTime() <= taskEnd.getTime()) {
+                taskSpan++;
+            }
+          });
+          
+          for (let i = 0; i < days.length; i++) {
+            if (i === taskStartCol && taskSpan > 0) {
+              const barWidth = (taskSpan * dayWidth) - (isMobile ? 4 : 8);
+              const barColor = task.completed ? 'var(--color-success)' : task.color; 
+              const leftOffset = isMobile ? 2 : 4;
+              
+              html += `<div class="gantt-cell" style="grid-column: span ${taskSpan}; min-width: ${barWidth}px;">
+                <div class="gantt-bar" style="background: ${barColor}; width: ${barWidth}px; left: ${leftOffset}px;" onclick="toggleTaskCompletion('${task.id}')" title="Durée : ${taskSpan} jours"></div>
+              </div>`;
+              i += taskSpan - 1; 
+            } else if (i < taskStartCol || i >= taskStartCol + taskSpan || taskStartCol === -1) {
+              html += `<div class="gantt-cell" style="min-width: ${dayWidth}px;"></div>`;
+            }
+          }
+      });
+
+
+      html += `</div>`;
+      
+      const todayColIndex = days.findIndex(day => day.toDateString() === today.toDateString());
+      
+      if (todayColIndex !== -1) {
+          const todayOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
+          const headerHeight = isMobile ? 70 : 90;
+          html += `<div class="gantt-today-line" style="left: ${todayOffset}px; height: calc(100% - ${headerHeight}px); top: ${headerHeight}px;"></div>`;
+      }
+      
+      html += `</div>`;
+      container.innerHTML = html;
+      
+      if (todayColIndex !== -1) {
+        const scrollOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
+        wrapper.scrollLeft = scrollOffset - (wrapper.clientWidth / 2);
+      }
+    }
+
+    function manualSync() {
+      saveToCloud();
+      updateStatus("Synchronisation manuelle effectuée ✓");
+    }
+
+    function updateStatus(text) {
+      document.getElementById("statusText").innerHTML = text;
+    }
+  </script>
+</body>
+</html>
