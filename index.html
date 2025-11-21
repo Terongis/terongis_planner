@@ -693,13 +693,13 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
       /* Header Mobile */
       .header {
       display: flex;
-    /* Pousse le premier élément (Logo) à gauche et le dernier (Contrôles) à droite */
-    justify-content: space-between; 
-    align-items: center; /* Centre les éléments verticalement */
-    width: 100%; 
-    box-sizing: border-box;
-    height: auto !important;
-    padding: 10px 20px;
+      justify-content: space-between; 
+      align-items: center; 
+      width: 100%; 
+      flex-shrink: 0;
+      box-sizing: border-box;
+      height: auto !important;
+      padding: 10px 20px;
   
 }
       .header h1 {
