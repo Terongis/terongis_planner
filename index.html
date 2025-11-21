@@ -727,17 +727,12 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
 
    /* Pour mobile uniquement */
 @media (max-width: 768px) {
-    /* Style pour le conteneur .status-bar */
-    .status-bar {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 15px;
-        padding: 0 20px; /* Espace interne pour éviter que les éléments touchent les bords */
-        margin: 0 auto; /* Centre le conteneur */
+   .header {
+        padding: 10px 20px; /* Ajoute 20px d'espace à gauche et à droite */
         width: 100%;
         box-sizing: border-box;
+        
     }
-
     /* Style pour le statut d'information */
     .status-info {
         padding: 12px 15px;
@@ -752,13 +747,11 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
     .cost-total-card {
         grid-column: 1 / 2 !important;
         padding: 12px 15px;
-        margin: 0 10px; /* Marge latérale pour éviter de toucher les bords */
         background-color: #4CAF50;
         color: white;
         border-radius: 8px;
         text-align: center;
         width: auto; /* Largeur ajustée automatiquement */
-        max-width: calc(100% - 20px); /* Largeur maximale en tenant compte des marges */
         box-sizing: border-box;
     }
 
