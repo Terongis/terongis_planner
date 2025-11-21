@@ -725,42 +725,48 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
         word-break: break-word;
       }
 
-     /* Status Bar Mobile - Empilé verticalement */
-.status-bar {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-    padding: 0 20px; /* Espace interne pour éviter que les éléments touchent les bords */
-    margin: 0 auto; /* Centre le conteneur */
-    width: 100%;
-    box-sizing: border-box;
-}
+   /* Pour mobile uniquement */
+@media (max-width: 768px) {
+    /* Style pour le conteneur .status-bar */
+    .status-bar {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 0 20px; /* Espace interne pour éviter que les éléments touchent les bords */
+        margin: 0 auto; /* Centre le conteneur */
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-.status-info {
-  padding: 12px 15px;
-  flex-direction: column;
-  gap: 10px;
-  text-align: center;
-  background-color: #2f3336;
-  border-radius: 8px;
-}
+    /* Style pour le statut d'information */
+    .status-info {
+        padding: 12px 15px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+        background-color: #2f3336;
+        border-radius: 8px;
+    }
 
-.cost-total-card {
- grid-column: 1 / 2 !important;
-    padding: 12px 15px;
-    margin: 0 20px; /* Marge à gauche et à droite */
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 8px;
-    text-align: center;
-    width: auto; /* Laisse la largeur s'ajuster au contenu */
-    max-width: 100%; /* Assure qu'il ne dépasse pas la largeur disponible */
-    box-sizing: border-box;
-}
+    /* Style pour le cadre "Coût Total" */
+    .cost-total-card {
+        grid-column: 1 / 2 !important;
+        padding: 12px 15px;
+        margin: 0 10px; /* Marge latérale pour éviter de toucher les bords */
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 8px;
+        text-align: center;
+        width: auto; /* Largeur ajustée automatiquement */
+        max-width: calc(100% - 20px); /* Largeur maximale en tenant compte des marges */
+        box-sizing: border-box;
+    }
 
-.cost-total-card p {
-  font-size: 20px;
-  margin: 0;
+    /* Style pour le texte dans le cadre "Coût Total" */
+    .cost-total-card p {
+        font-size: 18px; /* Taille de police légèrement réduite pour s'adapter */
+        margin: 0;
+    }
 }
       /* Form Mobile - Empilé verticalement */
       .form-grid {
