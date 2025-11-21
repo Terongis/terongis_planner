@@ -1275,7 +1275,7 @@ function loadFromCloud() {
       updateTotalCostDisplay();
       
       const lastUpdate = new Date(data.lastUpdated).toLocaleTimeString('fr-FR');
-      updateStatus(`Synchronisé avec le Cloud. Dernière Maj : ${lastUpdate}`);
+      updateStatus(`Dernière Maj : ${lastUpdate}`);
     } else {
       console.log("Aucune donnée Cloud trouvée. Création du document initial.");
       saveToCloud(); 
