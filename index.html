@@ -53,13 +53,15 @@
 
     /* Lock Screen (Modernisé) */
     #lockScreen {
-      display: flex;
+      position: fixed;
       background: #2f3336 !important;
       align-items: center;
       justify-content: center;
       height: 100vh;
       width: 100vw;
       overflow: hidden;
+      z-index: 1000; /* Assurez-vous que c'est au-dessus de tout le reste */
+   
     }
 #accessCodeInput {
   /* Rend le curseur de saisie invisible */
