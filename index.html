@@ -692,10 +692,14 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
 
       /* Header Mobile */
       .header {
-        padding: 20px 15px;
-        margin-bottom: 20px;
-        width: 100%;
-      }
+      display: flex;
+    /* Pousse le premier élément (Logo) à gauche et le dernier (Contrôles) à droite */
+    justify-content: space-between; 
+    align-items: center; /* Centre les éléments verticalement */
+    height: auto !important;
+    padding: 10px 20px;
+  
+}
       .header h1 {
         font-size: 24px;
       }
@@ -1043,6 +1047,11 @@ button, .button, .category-btn {
     /* On garde l'ombre Neumorphic, mais on la rend légèrement plus discrète */
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3), -4px -4px 8px rgba(255, 255, 255, 0.03) !important; 
 }
+    .header-controls-right {
+    display: flex;
+    gap: 15px; /* Ajoute de l'espace entre la carte Synchro et la carte Coût Total */
+    align-items: center; /* Aligne les deux cartes verticalement */
+}
 
 /* ==================================================== */
 /* STYLE DU LOGO IMAGE */
@@ -1063,6 +1072,11 @@ button, .button, .category-btn {
   max-width: 100%;
   max-height: 280px;
   object-fit: contain;
+}
+    .header-controls-right {
+    display: flex;
+    gap: 15px; /* Espace entre la Synchro et le Coût Total */
+    align-items: center; /* Aligne les deux cartes verticalement */
 }
 
 /* Logo pour l'en-tête principal (Haut à Gauche) */
@@ -1098,24 +1112,26 @@ height: 30px;
 
   <div id="appContainer" style="display:none;">
     <div class="app">
-      <div class="header">
-        <img src="logo_arbre.png" alt="Logo de l'application" class="app-header-logo">
-             </div>
-
-      <div class="status-bar">
+     <div class="header">
+    
+    <img src="logo_arbre.png" alt="Logo de l'application" class="app-header-logo">
+    
+    <div class="header-controls-right">
+        
         <div class="status-info">
-          <div>
-            <span class="status-indicator"></span>
-            <span id="statusText">Prêt pour la planification</span>
-          </div>
-          <button class="btn btn-secondary btn-small" onclick="manualSync()">💾 Sauvegarder</button>
+            <div>
+                <span class="status-indicator"></span>
+                <span id="statusText">Prêt pour la planification</span>
+            </div>
+            </div>
+        
+        <div id="costTotalCard" class="cost-total-card">
+            <h3>COÛT TOTAL</h3>
+            <p id="totalCostDisplay">0,00 €</p>
         </div>
         
-        <div id="costTotalCard" class="cost-total-card" style="grid-column: 2 / 4;">
-          <h3>COÛT TOTAL</h3>
-          <p id="totalCostDisplay">0,00 €</p>
-        </div>
-      </div>
+    </div>
+</div>
 
       <div class="card">
         <h2 class="card-title">🏷️ Gestion des Catégories</h2>
