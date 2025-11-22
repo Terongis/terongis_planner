@@ -1390,30 +1390,7 @@ function loadFromCloud() {
     });
 
    
-// ============= MIGRATION COULEURS (À EXÉCUTER UNE SEULE FOIS) =============
-    function migrateTaskColors() {
-      let colorCounter = 0;
-      
-      // Recalculer les couleurs des catégories
-      categories.forEach((cat, index) => {
-        cat.color = generateTaskColor(index);
-      });
-      
-      // Recalculer les couleurs des tâches
-      tasks.forEach((task, index) => {
-        task.color = generateTaskColor(index);
-      });
-      
-      // Sauvegarder
-      saveToCloud();
-      renderCategories();
-      updateCategorySelect();
-      renderTasks();
-      renderGantt();
-      
-      updateStatus("✅ Migration des couleurs terminée ! Toutes les tâches ont de nouvelles couleurs.");
-      console.log(`${categories.length} catégories et ${tasks.length} tâches migrées.`);
-    }
+   
 function checkAccess() {
   const code = document.getElementById("accessCode").value;
   
