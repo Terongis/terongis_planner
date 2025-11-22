@@ -1244,11 +1244,7 @@ height: 30px;
           <button class="btn btn-secondary" id="cancelBtn" style="display:none;" onclick="cancelEdit()">Annuler</button>
         </div>
       </div>
-<div class="card" style="background: #3a2a1a; border: 2px solid var(--color-warning);">
-        <h2 class="card-title">⚠️ Migration des couleurs</h2>
-        <p class="text-muted">Cliquez une seule fois pour recalculer les couleurs de toutes vos tâches existantes.</p>
-        <button class="btn btn-warning" onclick="migrateTaskColors()">🎨 Migrer les couleurs</button>
-      </div>
+
       <div class="card">
         <h2 class="card-title">📋 Liste des Tâches Actives</h2>
         <div id="tasksList"></div>
@@ -1786,6 +1782,22 @@ function checkAccess() {
       if (!draggedTaskId || draggedTaskId === targetTaskId) {
         return false;
       }
+       const draggedIndex = tasks.findIndex(t => t.id === draggedTaskId);
+      const targetIndex = tasks.findIndex(t => t.id === targetTaskId);
+
+      if (draggedIndex === -1 || targetIndex === -1) {
+        return false;
+      }
+
+      const [draggedTask] = tasks.splice(draggedIndex, 1);
+      tasks.splice(targetIndex, 0, draggedTask);
+
+      saveToCloud();
+      renderTasks();
+      updateStatus(`Tâche "${draggedTask.name}" déplacée.`);
+
+      return false;
+    }
 
       // Trouver les indices
       const draggedIndex = tasks.findIndex(t => t.id === draggedTaskId);
