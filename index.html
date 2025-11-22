@@ -589,6 +589,143 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    /* ============================================
+     * MODAL / DRAWER FORMULAIRE
+     * ============================================ */
+    
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+    
+    .modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: #2f3336;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      max-width: 600px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .modal-header {
+      padding: 25px;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--color-text-light);
+      margin: 0;
+    }
+    
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      font-size: 28px;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--color-text-light);
+    }
+    
+    .modal-body {
+      padding: 25px;
+    }
+    
+    .modal-footer {
+      padding: 20px 25px;
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    
+    .form-section {
+      margin-bottom: 20px;
+    }
+    
+    .form-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-light);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .form-simple {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .form-advanced {
+      display: none;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--color-border);
+    }
+    
+    .form-advanced.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+    
+    .toggle-advanced {
+      background: transparent;
+      border: 1px solid var(--color-border);
+      color: var(--color-primary);
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+      width: 100%;
+      margin-top: 15px;
+    }
+    
+    .toggle-advanced:hover {
+      background: rgba(62, 220, 157, 0.1);
+      border-color: var(--color-primary);
+    }
     
     /* Dashboard Stats */
     .stats-grid {
@@ -980,6 +1117,39 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
         width: 56px;
         height: 56px;
         font-size: 24px;
+      }
+
+    /* Modal Mobile */
+      .modal-content {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 16px 16px 0 0;
+        max-height: 90vh;
+        position: fixed;
+        bottom: 0;
+        animation: slideUpMobile 0.3s ease;
+      }
+      
+      @keyframes slideUpMobile {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+      
+      .modal-header {
+        padding: 20px;
+      }
+      
+      .modal-body {
+        padding: 20px;
+      }
+      
+      .modal-footer {
+        padding: 15px 20px;
+        flex-direction: column;
+      }
+      
+      .modal-footer .btn {
+        width: 100%;
       }
       /* Header Mobile */
       .header {
@@ -2312,12 +2482,111 @@ function checkAccess() {
     }
 
     // ============= MODAL TÂCHE (Temporaire pour l'étape 1) =============
+   // ============= MODAL FORMULAIRE TÂCHE =============
+    let isAdvancedFormOpen = false;
+    
     function openTaskModal() {
-      // Pour l'instant, on scroll vers le haut et on bascule sur l'onglet catégories
-      // (sera remplacé par un vrai modal à l'étape 3)
-      alert("Fonctionnalité 'Ajouter une tâche' - Modal à implémenter à l'étape 3");
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Réinitialiser le formulaire
+      clearModalForm();
+      
+      // Mettre à jour le select des catégories
+      updateModalCategorySelect();
+      
+      // Ouvrir le modal
+      document.getElementById('taskModal').classList.add('active');
+      document.body.style.overflow = 'hidden'; // Bloquer le scroll
+      
+      // Focus sur le champ nom
+      setTimeout(() => {
+        document.getElementById('taskNameModal').focus();
+      }, 300);
     }
+    
+    function closeTaskModal(event) {
+      // Si on clique sur l'overlay (pas le contenu), fermer
+      if (event && event.target.id !== 'taskModal') return;
+      
+      document.getElementById('taskModal').classList.remove('active');
+      document.body.style.overflow = ''; // Réactiver le scroll
+      isAdvancedFormOpen = false;
+      document.getElementById('advancedForm').classList.remove('active');
+      document.getElementById('toggleAdvancedText').textContent = '➕ Plus d\'options';
+    }
+    
+    function toggleAdvancedForm() {
+      isAdvancedFormOpen = !isAdvancedFormOpen;
+      const form = document.getElementById('advancedForm');
+      const text = document.getElementById('toggleAdvancedText');
+      
+      if (isAdvancedFormOpen) {
+        form.classList.add('active');
+        text.textContent = '➖ Moins d\'options';
+      } else {
+        form.classList.remove('active');
+        text.textContent = '➕ Plus d\'options';
+      }
+    }
+    
+    function updateModalCategorySelect() {
+      const select = document.getElementById('taskCategoryModal');
+      select.innerHTML = '<option value="">— Sans catégorie —</option>' +
+        categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+    }
+    
+    function clearModalForm() {
+      editingTaskId = null;
+      document.getElementById('taskNameModal').value = '';
+      document.getElementById('taskStartModal').value = '';
+      document.getElementById('taskEndModal').value = '';
+      document.getElementById('taskDescModal').value = '';
+      document.getElementById('taskCategoryModal').value = '';
+      document.getElementById('taskCostModal').value = '0';
+      document.getElementById('modalTitle').textContent = '🚀 Nouvelle Tâche';
+      document.getElementById('modalSubmitBtn').innerHTML = '➕ Ajouter';
+      document.getElementById('editModeNoticeModal').style.display = 'none';
+      
+      // Fermer le formulaire avancé
+      isAdvancedFormOpen = false;
+      document.getElementById('advancedForm').classList.remove('active');
+      document.getElementById('toggleAdvancedText').textContent = '➕ Plus d\'options';
+    }
+    
+    function submitTaskFromModal() {
+      const name = document.getElementById('taskNameModal').value.trim();
+      const start = document.getElementById('taskStartModal').value;
+      const end = document.getElementById('taskEndModal').value;
+      const desc = document.getElementById('taskDescModal').value.trim();
+      const categoryId = document.getElementById('taskCategoryModal').value;
+      const cost = parseFloat(document.getElementById('taskCostModal').value) || 0;
+
+      if (!name) {
+        alert("Le nom de la tâche est obligatoire.");
+        return;
+      }
+
+      if (editingTaskId) {
+        // Mode édition
+        if (start && end && new Date(start) > new Date(end)) {
+          alert("La date de début doit être avant ou égale à la date de fin.");
+          return;
+        }
+
+        const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
+        if (taskIndex === -1) return;
+
+        tasks[taskIndex] = {
+          ...tasks[taskIndex],
+          name,
+          start,
+          end,
+          desc,
+          categoryId,
+          cost
+        };
+
+        saveToCloud();
+        updateStatus(`Tâche "${name}" mise à jour.`);
+      } else {
     function manualSync() {
       saveToCloud();
       updateStatus("Synchronisation manuelle effectuée ✓");
@@ -2327,5 +2596,65 @@ function checkAccess() {
       document.getElementById("statusText").innerHTML = text;
     }
   </script>
+  <!-- Modal Formulaire Tâche -->
+  <div id="taskModal" class="modal-overlay" onclick="closeTaskModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">🚀 Nouvelle Tâche</h3>
+        <button class="modal-close" onclick="closeTaskModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div id="editModeNoticeModal" class="edit-mode-notice" style="display:none; margin-bottom: 20px;">
+          ✏️ Mode Édition - Modifiez les informations ci-dessous.
+        </div>
+        
+        <!-- Formulaire Simple -->
+        <div class="form-simple">
+          <div class="form-section">
+            <label class="form-section-title">📝 Nom de la tâche *</label>
+            <input type="text" id="taskNameModal" placeholder="Ex: Finaliser le rapport" />
+          </div>
+          
+          <div class="form-section">
+            <label class="form-section-title">📅 Dates</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+              <input type="date" id="taskStartModal" title="Date de début" />
+              <input type="date" id="taskEndModal" title="Date de fin" />
+            </div>
+          </div>
+        </div>
+        
+        <button class="toggle-advanced" onclick="toggleAdvancedForm()">
+          <span id="toggleAdvancedText">➕ Plus d'options</span>
+        </button>
+        
+        <!-- Formulaire Avancé -->
+        <div class="form-advanced" id="advancedForm">
+          <div class="form-section">
+            <label class="form-section-title">🏷️ Catégorie</label>
+            <select id="taskCategoryModal"></select>
+          </div>
+          
+          <div class="form-section">
+            <label class="form-section-title">💰 Coût estimé</label>
+            <input type="number" step="0.01" id="taskCostModal" placeholder="0.00" value="0" min="0" />
+          </div>
+          
+          <div class="form-section">
+            <label class="form-section-title">📄 Description</label>
+            <textarea id="taskDescModal" placeholder="Détails supplémentaires (facultatif)" rows="4"></textarea>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeTaskModal()">Annuler</button>
+        <button class="btn btn-primary" id="modalSubmitBtn" onclick="submitTaskFromModal()">
+          ➕ Ajouter
+        </button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
