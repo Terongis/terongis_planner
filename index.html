@@ -1240,6 +1240,10 @@
   <span>●</span>
   <span>Catégories</span>
 </button>
+     <button class="tab-button" onclick="switchTab('shopping')">
+  <span>🛒</span>
+  <span>Courses</span>
+</button>     
 <button class="tab-button" onclick="switchTab('stats')">
   <span>▲</span>
   <span>Stats</span>
@@ -1278,7 +1282,15 @@
           <div id="categoriesList" class="category-list"></div>
         </div>
       </div>
-
+<!-- Contenu Onglet : Liste de Courses -->
+<div id="tab-shopping" class="tab-content">
+  <div class="card">
+    <h2 class="card-title">🛒 Liste de Courses</h2>
+    <textarea id="shoppingList" 
+              style="min-height: 400px; font-family: 'Inter', monospace; line-height: 1.8;"></textarea>
+    <button class="btn btn-primary" onclick="saveShoppingList()" style="margin-top: 15px;">💾 Sauvegarder</button>
+  </div>
+</div>
       <!-- Contenu Onglet : Stats -->
       <div id="tab-stats" class="tab-content">
         <div class="card">
@@ -1463,6 +1475,10 @@
           tasks = data.tasks || [];
           categories = data.categories || [];
           colorIndex = data.colorIndex || 0;
+          shoppingListContent = data.shoppingList || '';
+if (document.getElementById('shoppingList')) {
+  document.getElementById('shoppingList').value = shoppingListContent;
+}
           renderCategories();
           updateCategorySelect();
           renderTasks();
@@ -1929,7 +1945,28 @@ html += `<div class="gantt-cell" style="min-width: ${dayWidth}px; background: ${
         updateStats();
       }
     }
+// ============= LISTE DE COURSES =============
+let shoppingListContent = '';
 
+function saveShoppingList() {
+  shoppingListContent = document.getElementById('shoppingList').value;
+  if (!db) {
+    console.log("Firebase non initialisé");
+    return;
+  }
+  
+  db.collection("planners").doc(DOC_ID).update({
+    shoppingList: shoppingListContent,
+    shoppingListUpdated: new Date().toISOString()
+  })
+  .then(() => {
+    updateStatus("Liste de courses sauvegardée ✓");
+  })
+  .catch((error) => {
+    console.error("Erreur sauvegarde liste:", error);
+    updateStatus(`Erreur : ${error.message}`);
+  });
+}
     // ============= STATISTIQUES =============
     function updateStats() {
       const completed = tasks.filter(t => t.completed).length;
