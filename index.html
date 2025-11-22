@@ -2213,13 +2213,12 @@ function saveShoppingList() {
       console.log("✏️ Mode édition pour tâche ID:", editingTaskId);
     }
   </script>
-  <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js")
-    .then(() => console.log("Service Worker enregistré"))
-    .catch(err => console.error("Erreur SW:", err));
-}
+ <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+  }
 </script>
+
 
 </body>
 </html>
