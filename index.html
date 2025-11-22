@@ -1850,12 +1850,13 @@ updateStatus(`Dernière Maj : ${lastUpdate}`);
         }
         monthMap.get(key).days.push(day);
       });
-      monthMap.forEach(({ year, month, days: monthDays }) => {
-        const monthName = new Date(year, month).toLocaleDateString('fr-FR', { month: 'long' });
-        const width = monthDays.length * dayWidth;
-        const displayName = isMobile ? monthName.substring(0, 3) : monthName.charAt(0).toUpperCase() + monthName.slice(1);
-        html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px;">${displayName}</div>`;
-      });
+     monthMap.forEach(({ year, month, days: monthDays }) => {
+  const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+  const monthName = isMobile ? monthNames[month] : new Date(year, month).toLocaleDateString('fr-FR', { month: 'long' });
+  const width = monthDays.length * dayWidth;
+  const displayName = isMobile ? monthName : monthName.charAt(0).toUpperCase() + monthName.slice(1);
+  html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px;">${displayName}</div>`;
+});
       html += `</div></div>`;
       const rowCount = allTasksRendered.length;
       let gridTemplate = `grid-template-rows: repeat(${rowCount}, auto);`;
