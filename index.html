@@ -1834,11 +1834,19 @@
       html += `<div class="gantt-grid" style="${gridTemplate} ${gridColumns}; min-width: ${totalWidth}px;">`;
       html += `<div class="gantt-header">Catégorie</div>`;
       html += `<div class="gantt-header">Tâche</div>`;
-      days.forEach(day => {
-        const isToday = day.toDateString() === today.toDateString();
-        const todayClass = isToday ? 'today' : '';
-        html += `<div class="gantt-day-header ${todayClass}" style="min-width: ${dayWidth}px;">${day.getDate()}</div>`;
-      });
+     const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+days.forEach(day => {
+  const isToday = day.toDateString() === today.toDateString();
+  const dayOfWeek = day.getDay();
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  const todayClass = isToday ? 'today' : '';
+  const weekendClass = isWeekend ? 'weekend' : '';
+  const bgColor = isWeekend ? '#1a1a1a' : '';
+  html += `<div class="gantt-day-header ${todayClass} ${weekendClass}" style="min-width: ${dayWidth}px; background: ${bgColor};">
+    <div style="font-size: 10px; color: var(--color-text-muted); margin-bottom: 2px;">${dayNames[dayOfWeek]}</div>
+    <div>${day.getDate()}</div>
+  </div>`;
+});
       let renderedCategoryIds = new Set();
       let renderedUncategorizedHeader = false;
       allTasksRendered.forEach((task) => {
@@ -1885,7 +1893,10 @@ html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompl
             </div>`;
             i += taskSpan - 1; 
           } else if (i < taskStartCol || i >= taskStartCol + taskSpan || taskStartCol === -1) {
-            html += `<div class="gantt-cell" style="min-width: ${dayWidth}px;"></div>`;
+            const cellDay = days[i];
+const isCellWeekend = cellDay && (cellDay.getDay() === 0 || cellDay.getDay() === 6);
+const cellBg = isCellWeekend ? '#1a1a1a' : '#2f3336';
+html += `<div class="gantt-cell" style="min-width: ${dayWidth}px; background: ${cellBg};"></div>`;
           }
         }
       });
