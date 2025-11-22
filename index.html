@@ -1904,18 +1904,7 @@ function checkAccess() {
     }
 
     // ============= TASK MANAGEMENT (Coût Ajouté) =============
-    function addTask() {
-      const name = document.getElementById("taskName").value.trim();
-      const start = document.getElementById("taskStart").value;
-      const end = document.getElementById("taskEnd").value;
-      const desc = document.getElementById("taskDesc").value.trim();
-      const categoryId = document.getElementById("taskCategory").value;
-      const cost = parseFloat(document.getElementById("taskCost").value) || 0;
-
-      if (!name) {
-        alert("Tu as oublié le nom de la tâche.");
-        return;
-      }
+   
 
      if (editingTaskId) {
     // Si vous modifiez, assurez-vous que la fonction updateTask() gère l'enregistrement.
@@ -1986,45 +1975,10 @@ function checkAccess() {
       updateTotalCostDisplay();
     }
 
-    function editTask(id) {
-      const task = tasks.find(t => t.id === id);
-      if (!task) return;
-
-      editingTaskId = id;
-      document.getElementById("taskName").value = task.name;
-      document.getElementById("taskStart").value = task.start;
-      document.getElementById("taskEnd").value = task.end;
-      document.getElementById("taskDesc").value = task.desc || "";
-      document.getElementById("taskCategory").value = task.categoryId || "";
-      document.getElementById("taskCost").value = (task.cost !== undefined) ? task.cost : 0;
-
-      document.getElementById("formTitle").innerHTML = "✏️ Modifier la Tâche : **" + task.name + "**";
-      document.getElementById("submitBtn").textContent = "Mettre à jour la tâche";
-      document.getElementById("cancelBtn").style.display = "inline-block";
-      document.getElementById("editModeNotice").style.display = "block";
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      updateStatus("Mode édition activé.");
-    }
-
-    function cancelEdit() {
-      clearForm();
-      updateStatus("Édition annulée.");
-    }
-
-    function clearForm() {
-      editingTaskId = null;
-      document.getElementById("taskName").value = "";
-      document.getElementById("taskStart").value = "";
-      document.getElementById("taskEnd").value = "";
-      document.getElementById("taskDesc").value = "";
-      document.getElementById("taskCategory").value = "";
-      document.getElementById("taskCost").value = "0";
-      document.getElementById("formTitle").innerHTML = "🚀 Créer une Nouvelle Tâche";
-      document.getElementById("submitBtn").textContent = "➕ Ajouter la tâche";
-      document.getElementById("cancelBtn").style.display = "none";
-      document.getElementById("editModeNotice").style.display = "none";
-    }
+   function editTask(id) {
+  // Ouvre le modal en mode édition
+  openTaskModal(id);
+}
 
     function deleteTask(id) {
       const taskName = tasks.find(t => t.id === id)?.name || "Tâche";
@@ -2033,6 +1987,7 @@ function checkAccess() {
       saveToCloud();
       renderTasks();
       renderGantt();
+      updateStats();
       updateTotalCostDisplay();
       updateStatus(`${taskName} supprimée définitivement.`);
       if(editingTaskId === id) clearForm();
@@ -2050,6 +2005,7 @@ function checkAccess() {
         `Tâche "${tasks[taskIndex].name}" marquée comme **terminée**! 🎉` : 
         `Tâche "${tasks[taskIndex].name}" remise en **cours** 🔄`;
       updateStatus(statusText);
+      updateStats();
     }
 
     // ============= COST LOGIC =============
@@ -2584,13 +2540,31 @@ function checkAccess() {
           cost
         };
 
-        saveToCloud();
-        updateStatus(`Tâche "${name}" mise à jour.`);
-      } else {
-    function manualSync() {
-      saveToCloud();
-      updateStatus("Synchronisation manuelle effectuée ✓");
-    }
+       updateStatus(`Tâche "${name}" mise à jour.`);
+    editingTaskId = null;
+
+  } else {
+    // Mode ajout
+    const newTask = {
+      id: Date.now().toString(),
+      name,
+      start,
+      end,
+      desc,
+      categoryId,
+      cost,
+      completed: false
+    };
+    tasks.push(newTask);
+    updateStatus(`Tâche "${name}" ajoutée.`);
+  }
+
+  saveToCloud();
+  renderTasks();
+  renderGantt();
+  updateStats(); // Mise à jour des stats après modification
+  closeTaskModal();
+}
 
     function updateStatus(text) {
       document.getElementById("statusText").innerHTML = text;
