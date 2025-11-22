@@ -1818,23 +1818,7 @@ function checkAccess() {
 
       return false;
     }
-      // Trouver les indices
-      const draggedIndex = tasks.findIndex(t => t.id === draggedTaskId);
-      const targetIndex = tasks.findIndex(t => t.id === targetTaskId);
-
-      if (draggedIndex === -1 || targetIndex === -1) return false;
-
-      // Réorganiser le tableau
-      const [draggedTask] = tasks.splice(draggedIndex, 1);
-      tasks.splice(targetIndex, 0, draggedTask);
-
-      saveToCloud();
-      renderTasks();
-      updateStatus(`Tâche "${draggedTask.name}" déplacée.`);
-
-      return false;
-    }
-  
+       
 
     function formatDate(dateString) {
       const date = new Date(dateString);
