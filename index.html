@@ -1204,29 +1204,29 @@
       <!-- Navigation par onglets -->
       <div class="tabs-container">
         <div class="tabs-nav">
-          <button class="tab-button active" onclick="switchTab('tasks')">
-            <span>📋</span>
-            <span>Tâches</span>
-          </button>
-          <button class="tab-button" onclick="switchTab('gantt')">
-            <span>📊</span>
-            <span>Gantt</span>
-          </button>
-          <button class="tab-button" onclick="switchTab('categories')">
-            <span>🏷️</span>
-            <span>Catégories</span>
-          </button>
-          <button class="tab-button" onclick="switchTab('stats')">
-            <span>📈</span>
-            <span>Stats</span>
-          </button>
+         <button class="tab-button active" onclick="switchTab('tasks')">
+  <span>✓</span>
+  <span>Tâches</span>
+</button>
+<button class="tab-button" onclick="switchTab('gantt')">
+  <span>◫</span>
+  <span>Gantt</span>
+</button>
+<button class="tab-button" onclick="switchTab('categories')">
+  <span>●</span>
+  <span>Catégories</span>
+</button>
+<button class="tab-button" onclick="switchTab('stats')">
+  <span>▲</span>
+  <span>Stats</span>
+</button>
         </div>
       </div>
 
       <!-- Contenu Onglet : Tâches -->
       <div id="tab-tasks" class="tab-content active">
         <div class="card">
-          <h2 class="card-title">📋 Liste des Tâches</h2>
+          <h2 class="card-title">✓ Liste des Tâches</h2>
           <div id="tasksList"></div>
         </div>
       </div>
@@ -1234,7 +1234,7 @@
       <!-- Contenu Onglet : Gantt -->
       <div id="tab-gantt" class="tab-content">
         <div class="card">
-          <h2 class="card-title">📊 Visualisation Gantt</h2>
+          <h2 class="card-title">◫ Visualisation Gantt</h2>
           <p class="text-muted mb-3">Cliquez sur une barre dans le diagramme pour marquer la tâche comme terminée.</p>
           <div id="ganttWrapper" style="overflow-x: auto;">
             <div id="ganttContainer" class="gantt-container"></div>
@@ -1245,7 +1245,7 @@
       <!-- Contenu Onglet : Catégories -->
       <div id="tab-categories" class="tab-content">
         <div class="card">
-          <h2 class="card-title">🏷️ Gestion des Catégories</h2>
+          <h2 class="card-title">● Gestion des Catégories</h2>
           <div class="form-row">
             <input type="text" id="categoryName" placeholder="Nom de la nouvelle catégorie" style="flex-grow: 1;" />
             <input type="color" id="categoryColor" value="#3EDC9D" title="Couleur de la catégorie" style="width: 80px; height: 48px; cursor: pointer; border-radius: 8px;" />
@@ -1258,23 +1258,23 @@
       <!-- Contenu Onglet : Stats -->
       <div id="tab-stats" class="tab-content">
         <div class="card">
-          <h2 class="card-title">📈 Statistiques du Projet</h2>
+          <h2 class="card-title">▲ Statistiques du Projet</h2>
           
           <div class="stats-grid">
             <div class="stat-card completed">
-              <div class="stat-icon">✅</div>
+              <div class="stat-icon">✓</div>
               <div class="stat-value" id="stat-completed">0</div>
               <div class="stat-label">Terminées</div>
             </div>
             
             <div class="stat-card active">
-              <div class="stat-icon">🔄</div>
+              <div class="stat-icon">○</div>
               <div class="stat-value" id="stat-active">0</div>
               <div class="stat-label">En cours</div>
             </div>
             
             <div class="stat-card cost">
-              <div class="stat-icon">💰</div>
+              <div class="stat-icon">€</div>
               <div class="stat-value" id="stat-cost">0,00 €</div>
               <div class="stat-label">Coût total</div>
             </div>
