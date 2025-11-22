@@ -2077,6 +2077,9 @@ html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompl
       
       // NE PAS appeler openTaskModal() car elle réinitialise le formulaire !
       // À la place, ouvrir le modal manuellement :
+     
+     // Mettre à jour le select des catégories
+      updateCategorySelect();
       
       // Remplir le formulaire AVANT d'ouvrir
       document.getElementById('taskNameModal').value = task.name;
@@ -2085,9 +2088,7 @@ html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompl
       document.getElementById('taskDescModal').value = task.desc || '';
       document.getElementById('taskCategoryModal').value = task.categoryId || '';
       document.getElementById('taskCostModal').value = task.cost || 0;
-      
-      // Mettre à jour le select des catégories
-      updateCategorySelect();
+            
       
       // Changer le titre et le bouton
       document.getElementById('modalTitle').textContent = '✏️ Modifier la Tâche';
