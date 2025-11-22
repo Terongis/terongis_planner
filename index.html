@@ -1963,6 +1963,10 @@
         alert("Le nom de la tâche est obligatoire.");
         return;
       }
+      // LOG DEBUG
+      console.log("editingTaskId =", editingTaskId);
+      console.log("Mode :", editingTaskId ? "ÉDITION" : "AJOUT");
+
 
       if (start && end && new Date(start) > new Date(end)) {
         alert("La date de début doit être avant ou égale à la date de fin.");
@@ -1970,8 +1974,11 @@
       }
 
       if (editingTaskId) {
-        // MODE ÉDITION
+         // MODE ÉDITION
+        console.log("✏️ Modification de la tâche:", editingTaskId);
         const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
+        console.log("Index trouvé:", taskIndex);
+        
         if (taskIndex !== -1) {
           tasks[taskIndex] = {
             ...tasks[taskIndex],
@@ -1982,11 +1989,15 @@
             categoryId,
             cost
           };
+          console.log("✅ Tâche modifiée:", tasks[taskIndex]);
           updateStatus(`Tâche "${name}" mise à jour.`);
+        } else {
+          console.error("❌ Tâche non trouvée avec l'ID:", editingTaskId);
         }
-        editingTaskId = null; // IMPORTANT : Réinitialiser après modification
+        editingTaskId = null; // Réinitialiser
       } else {
         // MODE AJOUT
+        console.log("➕ Ajout d'une nouvelle tâche");
         const color = generateTaskColor(colorIndex);
         colorIndex++; 
         const newTask = {
@@ -2002,6 +2013,7 @@
           createdAt: new Date().toISOString()
         };
         tasks.push(newTask);
+        console.log("✅ Nouvelle tâche ajoutée:", newTask);
         updateStatus(`Tâche "${name}" ajoutée.`);
       }
 
@@ -2018,25 +2030,41 @@
       document.getElementById('tab-tasks').classList.add('active');
     }
 
-    function editTask(taskId) {
+   function editTask(taskId) {
       const task = tasks.find(t => t.id === taskId);
       if (!task) return;
+      
+      // IMPORTANT : Définir editingTaskId AVANT d'ouvrir le modal
+      editingTaskId = taskId;
+      
+      // Remplir le formulaire
       document.getElementById('taskNameModal').value = task.name;
-      document.getElementById('taskStartModal').value = task.start;
-      document.getElementById('taskEndModal').value = task.end;
+      document.getElementById('taskStartModal').value = task.start || '';
+      document.getElementById('taskEndModal').value = task.end || '';
       document.getElementById('taskDescModal').value = task.desc || '';
       document.getElementById('taskCategoryModal').value = task.categoryId || '';
       document.getElementById('taskCostModal').value = task.cost || 0;
-      editingTaskId = taskId;
+      
+      // Changer le titre et le bouton
       document.getElementById('modalTitle').textContent = '✏️ Modifier la Tâche';
       document.getElementById('modalSubmitBtn').textContent = '💾 Sauvegarder';
       document.getElementById('editModeNoticeModal').style.display = 'block';
+      
+      // Ouvrir le formulaire avancé si nécessaire
       if (task.desc || task.categoryId || task.cost > 0) {
         isAdvancedFormOpen = true;
         document.getElementById('advancedForm').classList.add('active');
         document.getElementById('toggleAdvancedText').textContent = '➖ Moins d\'options';
       }
-      openTaskModal();
+      
+      // Ouvrir le modal
+      document.getElementById('taskModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      setTimeout(() => {
+        document.getElementById('taskNameModal').focus();
+      }, 300);
+      
       updateStatus("Mode édition activé.");
     }
   </script>
