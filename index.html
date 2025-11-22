@@ -2465,6 +2465,27 @@ function submitTaskFromModal() {
   updateStats(); // Mise à jour des stats après modification
   closeTaskModal();
 }
+    function editTask(taskId) {
+  const task = tasks.find(t => t.id === taskId);
+  if (!task) return;
+
+  // Remplir le formulaire modal avec les données de la tâche
+  document.getElementById('taskNameModal').value = task.name;
+  document.getElementById('taskStartModal').value = task.start;
+  document.getElementById('taskEndModal').value = task.end;
+  document.getElementById('taskDescModal').value = task.desc || '';
+  document.getElementById('taskCategoryModal').value = task.categoryId || '';
+  document.getElementById('taskCostModal').value = task.cost || 0;
+
+  // Indiquer que nous sommes en mode édition
+  editingTaskId = taskId;
+  document.getElementById('modalTitle').textContent = '✏️ Modifier la Tâche';
+  document.getElementById('modalSubmitBtn').textContent = '💾 Sauvegarder';
+  document.getElementById('editModeNoticeModal').style.display = 'block';
+
+  // Ouvrir le modal
+  openTaskModal();
+}
 
     function updateStatus(text) {
       document.getElementById("statusText").innerHTML = text;
@@ -2480,7 +2501,8 @@ function submitTaskFromModal() {
       
       <div class="modal-body">
         <div id="editModeNoticeModal" class="edit-mode-notice" style="display:none; margin-bottom: 20px;">
-          ✏️ Mode Édition - Modifiez les informations ci-dessous.
+          ✏️ Mode Édition - Modifiez les
+          informations ci-dessous.
         </div>
         
         <!-- Formulaire Simple -->
