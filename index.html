@@ -1855,8 +1855,10 @@
           renderedUncategorizedHeader = true;
         }
         const completedClass = task.completed ? 'completed' : '';
-        const taskName = isMobile && task.name.length > 15 ? task.name.substring(0, 15) + '...' : task.name;
-        html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompletion('${task.id}')" title="${task.name}">${taskName}</div>`;
+html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompletion('${task.id}')" title="${task.name}" style="--task-color: ${task.color};">
+  <style>.gantt-task-name[title="${task.name.replace(/"/g, '&quot;')}"]:before { background: ${task.color}; }</style>
+  ${task.name}
+</div>`;
         const taskStart = new Date(task.start);
         taskStart.setHours(0, 0, 0, 0); 
         const taskEnd = new Date(task.end);
