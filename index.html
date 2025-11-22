@@ -1735,14 +1735,18 @@ function checkAccess() {
       taskElement.classList.toggle('expanded');
     }
 
-    // ============= DRAG & DROP (Réordonnancement) =============
+// ============= DRAG & DROP (Réordonnancement) =============
     let draggedTaskId = null;
+    let draggedElement = null;
 
     function handleDragStart(event, taskId) {
       draggedTaskId = taskId;
+      draggedElement = event.currentTarget;
       event.currentTarget.classList.add('dragging');
       event.dataTransfer.effectAllowed = 'move';
-      event.dataTransfer.setData('text/html', event.currentTarget.innerHTML);
+      
+      // Important : définir les données pour le drag
+      event.dataTransfer.setData('text/plain', taskId);
     }
 
     function handleDragEnd(event) {
@@ -1750,14 +1754,19 @@ function checkAccess() {
       document.querySelectorAll('.task-item').forEach(item => {
         item.classList.remove('drag-over');
       });
+      draggedTaskId = null;
+      draggedElement = null;
     }
 
     function handleDragOver(event) {
-      if (event.preventDefault) {
-        event.preventDefault();
-      }
+      event.preventDefault(); // CRUCIAL : autorise le drop
       event.dataTransfer.dropEffect = 'move';
-      event.currentTarget.classList.add('drag-over');
+      
+      const currentElement = event.currentTarget;
+      if (currentElement !== draggedElement) {
+        currentElement.classList.add('drag-over');
+      }
+      
       return false;
     }
 
@@ -1766,12 +1775,35 @@ function checkAccess() {
     }
 
     function handleDrop(event, targetTaskId) {
-      if (event.stopPropagation) {
-        event.stopPropagation();
-      }
-      event.currentTarget.classList.remove('drag-over');
+      event.preventDefault(); // CRUCIAL
+      event.stopPropagation();
+      
+      const targetElement = event.currentTarget;
+      targetElement.classList.remove('drag-over');
 
-      if (draggedTaskId === targetTaskId) return false;
+      if (!draggedTaskId || draggedTaskId === targetTaskId) {
+        return false;
+      }
+
+      // Trouver les indices
+      const draggedIndex = tasks.findIndex(t => t.id === draggedTaskId);
+      const targetIndex = tasks.findIndex(t => t.id === targetTaskId);
+
+      if (draggedIndex === -1 || targetIndex === -1) {
+        return false;
+      }
+
+      // Réorganiser le tableau
+      const [draggedTask] = tasks.splice(draggedIndex, 1);
+      tasks.splice(targetIndex, 0, draggedTask);
+
+      // Sauvegarder et rafraîchir
+      saveToCloud();
+      renderTasks();
+      updateStatus(`Tâche "${draggedTask.name}" déplacée.`);
+
+      return false;
+    }
 
       // Trouver les indices
       const draggedIndex = tasks.findIndex(t => t.id === draggedTaskId);
