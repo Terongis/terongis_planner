@@ -2430,7 +2430,7 @@ function submitTaskFromModal() {
   }
 
   if (editingTaskId) {
-    // Mode édition
+    // Mode édition (Logique complète)
     if (start && end && new Date(start) > new Date(end)) {
       alert("La date de début doit être avant ou égale à la date de fin.");
       return;
@@ -2448,12 +2448,11 @@ function submitTaskFromModal() {
       categoryId,
       cost
     };
-
     updateStatus(`Tâche "${name}" mise à jour.`);
     editingTaskId = null;
 
   } else {
-    // Mode ajout - CLEAN
+    // Mode ajout (Logique complète)
     const color = generateTaskColor(colorIndex);
     colorIndex++; 
     
@@ -2466,17 +2465,18 @@ function submitTaskFromModal() {
       categoryId,
       cost,
       color, // COULEUR CORRECTEMENT AJOUTÉE
-      completed: false
+      completed: false,
+      createdAt: new Date().toISOString()
     };
-    tasks.push(newTask);
+    tasks.push(newTask); // <-- CETTE LIGNE AJOUTE LA TÂCHE
     updateStatus(`Tâche "${name}" ajoutée.`);
   }
 
-  // Actions finales communes aux deux modes
-  saveToCloud();
+  // ACTIONS FINALES COMMUNES :
+  saveToCloud(); // <-- C'EST CET APPEL QUI MANQUAIT APRÈS L'ERREUR DE SYNTAXE
   renderTasks();
   renderGantt();
-  updateStats(); // Mise à jour des stats après modification
+  updateStats();
   closeTaskModal();
 }
     function editTask(taskId) {
