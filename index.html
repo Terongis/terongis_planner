@@ -852,7 +852,7 @@
   background: #16161c;
   position: sticky;
   left: 0;
-  z-index: 30;
+  z-index: 40;
   cursor: pointer;
   user-select: none;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
@@ -886,7 +886,7 @@
   text-overflow: clip;
   position: sticky;
   left: 150px;
-  z-index: 25;
+  z-index: 35;
   min-width: 200px;
   display: flex;
   align-items: center;
@@ -1205,13 +1205,13 @@
         font-size: 9px;
       }
       
-    .gantt-category-cell {
+   .gantt-category-cell {
   padding: 8px 4px !important;
   font-size: 11px !important;
   min-width: 80px !important;
   left: 0 !important;
   position: sticky !important;
-  z-index: 30 !important;
+  z-index: 40 !important;
 }
 
 .gantt-task-name {
@@ -1220,7 +1220,7 @@
   min-width: 120px !important;
   left: 80px !important;
   position: sticky !important;
-  z-index: 25 !important;
+  z-index: 35 !important;
 }
       
       .gantt-cell {
@@ -1867,18 +1867,48 @@ updateStatus(`Dernière Maj : ${lastUpdate}`);
       const years = [...new Set(days.map(d => d.getFullYear()))];
       const yearText = years.length > 1 ? years.join(' - ') : years[0];
       html += `<div class="gantt-year-header" style="min-width: 100%;">${yearText}</div>`;
-      html += `<div style="display: flex; min-width: ${totalWidth}px;">`;
-      html += `<div style="min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444;"></div>`;
+    html += `<div style="display: flex; min-width: ${totalWidth}px;">`;
+      html += `<div style="min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444; position: sticky; left: 0; z-index: 40;"></div>`;
       html += `<div class="gantt-months-row" style="flex-grow: 1;">`;
-      const monthMap = new Map();
-      days.forEach(day => {
+      
+      // Créer un tableau ordonné des mois
+      const monthsArray = [];
+      let currentMonth = null;
+      let currentMonthData = null;
+      
+      days.forEach((day, index) => {
         const year = day.getFullYear();
         const month = day.getMonth();
         const key = `${year}-${month}`;
-        if (!monthMap.has(key)) {
-          monthMap.set(key, { year, month, days: [] });
+        
+        if (currentMonth !== key) {
+          if (currentMonthData) {
+            monthsArray.push(currentMonthData);
+          }
+          currentMonth = key;
+          currentMonthData = {
+            year,
+            month,
+            startIndex: index,
+            dayCount: 1
+          };
+        } else {
+          currentMonthData.dayCount++;
         }
-        monthMap.get(key).days.push(day);
+      });
+      
+      // Ajouter le dernier mois
+      if (currentMonthData) {
+        monthsArray.push(currentMonthData);
+      }
+      
+      // Afficher les mois dans l'ordre
+      monthsArray.forEach(({ year, month, dayCount }) => {
+        const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+        const monthName = isMobile ? monthNames[month] : new Date(year, month).toLocaleDateString('fr-FR', { month: 'long' });
+        const width = dayCount * dayWidth;
+        const displayName = isMobile ? monthName : monthName.charAt(0).toUpperCase() + monthName.slice(1);
+        html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px;">${displayName}</div>`;
       });
      monthMap.forEach(({ year, month, days: monthDays }) => {
   const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
@@ -1894,8 +1924,8 @@ updateStatus(`Dernière Maj : ${lastUpdate}`);
       const taskColWidth = isMobile ? 120 : 200;
       let gridColumns = `grid-template-columns: ${catColWidth}px ${taskColWidth}px repeat(${days.length}, ${dayWidth}px);`;
       html += `<div class="gantt-grid" style="${gridTemplate} ${gridColumns}; min-width: ${totalWidth}px;">`;
-      html += `<div class="gantt-header">Catégorie</div>`;
-      html += `<div class="gantt-header">Tâche</div>`;
+      html += `<div class="gantt-header" style="position: sticky; left: 0; z-index: 50;">Catégorie</div>`;
+      html += `<div class="gantt-header" style="position: sticky; left: ${catColWidth}px; z-index: 50;">Tâche</div>`;
      const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 days.forEach(day => {
   const isToday = day.toDateString() === today.toDateString();
