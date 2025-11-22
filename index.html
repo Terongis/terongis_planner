@@ -1537,41 +1537,78 @@
         });
     }
 
-    function loadFromCloud() {
-      if (!db) return updateStatus("Erreur : Firebase non initialisé.");
-      db.collection("planners").doc(DOC_ID).onSnapshot((doc) => {
-        if (doc.exists) {
-          const data = doc.data();
-          tasks = data.tasks || [];
-          categories = data.categories || [];
-          colorIndex = data.colorIndex || 0;
-          shoppingListContent = data.shoppingList || '';
-if (document.getElementById('shoppingList')) {
-  document.getElementById('shoppingList').value = shoppingListContent;
-}
-          renderCategories();
-          updateCategorySelect();
-          renderTasks();
-          renderGantt(); 
-          updateStats();
-         const lastUpdateDate = new Date(data.lastUpdated);
-const lastUpdate = lastUpdateDate.toLocaleDateString('fr-FR', { 
-  weekday: 'short', 
-  day: '2-digit', 
-  month: '2-digit' 
-}) + ' ' + lastUpdateDate.toLocaleTimeString('fr-FR', { 
-  hour: '2-digit', 
-  minute: '2-digit' 
-});
-updateStatus(`Dernière Maj : ${lastUpdate}`);
-        } else {
-          saveToCloud(); 
-          updateStatus("Initialisé sur le Cloud.");
-        }
-      }, (error) => {
-        updateStatus(`Erreur connexion : ${error.message}`);
+   function loadFromCloud() {
+  console.log("🔄 loadFromCloud() appelée");
+  
+  if (!db) {
+    console.error("❌ Firebase non initialisé !");
+    return updateStatus("Erreur : Firebase non initialisé.");
+  }
+  
+  console.log("✅ Firebase initialisé, tentative de connexion...");
+  updateStatus("Connexion au Cloud...");
+  
+  // Timeout de sécurité
+  let timeoutId = setTimeout(() => {
+    console.warn("⏱️ Timeout Firebase - tentative de reconnexion...");
+    updateStatus("Reconnexion...");
+  }, 5000); // 5 secondes
+  
+  db.collection("planners").doc(DOC_ID).onSnapshot((doc) => {
+    clearTimeout(timeoutId); // Annuler le timeout si on reçoit une réponse
+    
+    console.log("📦 Snapshot reçu");
+    console.log("Document existe ?", doc.exists);
+    
+    if (doc.exists) {
+      const data = doc.data();
+      console.log("📊 Données brutes reçues:", data);
+      
+      tasks = data.tasks || [];
+      categories = data.categories || [];
+      colorIndex = data.colorIndex || 0;
+      shoppingListContent = data.shoppingList || '';
+      
+      console.log("✅ Tâches chargées:", tasks.length);
+      console.log("✅ Catégories chargées:", categories.length);
+      
+      if (document.getElementById('shoppingList')) {
+        document.getElementById('shoppingList').value = shoppingListContent;
+      }
+      
+      renderCategories();
+      updateCategorySelect();
+      renderTasks();
+      
+      console.log("🎨 Appel de renderGantt()...");
+      renderGantt(); 
+      
+      updateStats();
+      
+      const lastUpdateDate = new Date(data.lastUpdated);
+      const lastUpdate = lastUpdateDate.toLocaleDateString('fr-FR', { 
+        weekday: 'short', 
+        day: '2-digit', 
+        month: '2-digit' 
+      }) + ' ' + lastUpdateDate.toLocaleTimeString('fr-FR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
       });
+      updateStatus(`Dernière Maj : ${lastUpdate}`);
+      console.log("✅ Synchronisation terminée !");
+    } else {
+      console.log("⚠️ Document n'existe pas, création...");
+      saveToCloud(); 
+      updateStatus("Initialisé sur le Cloud.");
     }
+  }, (error) => {
+    clearTimeout(timeoutId);
+    console.error("❌ Erreur Firebase:", error);
+    console.error("Code d'erreur:", error.code);
+    console.error("Message:", error.message);
+    updateStatus(`Erreur : ${error.code || 'Connexion impossible'}`);
+  });
+}
 
     // ============= LOCK SCREEN =============
     document.getElementById("accessCode").addEventListener("input", function(e) {
