@@ -1,7 +1,7 @@
-self.addEventListener("install", () => {
-  console.log("Service Worker installé.");
+self.addEventListener("install", (event) => {
+  console.log("Service Worker installé !");
 });
 
-self.addEventListener("fetch", () => {
-  // Laisse tout passer normalement, sans cache complexe
+self.addEventListener("activate", (event) => {
+  console.log("Service Worker activé !");
 });
