@@ -1816,6 +1816,8 @@ updateStatus(`Dernière Maj : ${lastUpdate}`);
     function renderGantt() {
       const container = document.getElementById("ganttContainer");
       const filteredTasks = tasks.filter(task => !task.completed && task.start && task.end);
+      console.log("🎨 Rendu Gantt - Nombre de tâches filtrées:", filteredTasks.length);
+      console.log("📋 Tâches:", filteredTasks);
       if (filteredTasks.length === 0) { 
         container.innerHTML = '<p class="text-muted">Aucune tâche active à afficher.</p>';
         return;
