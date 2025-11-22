@@ -1813,7 +1813,7 @@ updateStatus(`Dernière Maj : ${lastUpdate}`);
     }
 
     // ============= GANTT CHART =============
- function renderGantt() {
+function renderGantt() {
   const container = document.getElementById("ganttContainer");
   const filteredTasks = tasks.filter(task => !task.completed && task.start && task.end);
   
@@ -2013,26 +2013,6 @@ updateStatus(`Dernière Maj : ${lastUpdate}`);
       }
     }
   });
-  
-  html += `</div>`;
-  
-  const todayColIndex = days.findIndex(day => day.toDateString() === today.toDateString());
-  if (todayColIndex !== -1) {
-    const todayOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
-    const headerHeight = isMobile ? 70 : 90;
-    html += `<div class="gantt-today-line" style="left: ${todayOffset}px; height: calc(100% - ${headerHeight}px); top: ${headerHeight}px;"></div>`;
-  }
-  
-  html += `</div>`;
-  
-  container.innerHTML = html;
-  
-  const wrapper = document.getElementById("ganttWrapper");
-  if (todayColIndex !== -1 && wrapper) {
-    const scrollOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
-    wrapper.scrollLeft = scrollOffset - (wrapper.clientWidth / 2);
-  }
-}
   
   html += `</div>`;
   
