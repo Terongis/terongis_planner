@@ -344,15 +344,16 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* Tasks List */
+    /* Tasks List - Accordéon */
     .task-item {
       background: #2f3336;
-      padding: 20px;
       border-radius: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 8px;
       border-left: 5px solid;
       transition: all 0.3s;
       box-shadow: var(--shadow-soft);
+      cursor: pointer;
+      overflow: hidden;
     }
     .task-item:hover {
       background: #282833;
@@ -362,38 +363,121 @@
       border-left-color: var(--color-success) !important;
       background: #1a2228;
     }
-    .task-header {
+    .task-item.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+    }
+    .task-item.drag-over {
+      border-top: 3px solid var(--color-primary);
+    }
+    
+    /* En-tête compact (toujours visible) */
+    .task-header-compact {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 10px;
+      align-items: center;
+      padding: 15px 20px;
+      gap: 15px;
     }
-    .task-details {
+    .task-header-compact:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .task-compact-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-grow: 1;
+      min-width: 0;
+    }
+    
+    .drag-handle {
+      cursor: grab;
+      color: var(--color-text-muted);
+      font-size: 18px;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+    
+    .task-title-compact {
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--color-text-light);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       flex-grow: 1;
     }
-    .task-title {
-      font-weight: 700;
-      font-size: 18px;
-      color: var(--color-text-light);
-      margin-bottom: 5px;
-    }
-    .task-title.completed {
+    .task-title-compact.completed {
       text-decoration: line-through;
       color: var(--color-success);
     }
-    .task-dates {
-      font-size: 13px;
-      color: var(--color-text-muted);
+    
+    .task-category-badge-compact {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      white-space: nowrap;
       flex-shrink: 0;
-      text-align: right;
     }
-    .task-desc {
-      font-size: 14px;
+    
+    .task-expand-icon {
       color: var(--color-text-muted);
-      margin-top: 8px;
-      border-left: 2px solid var(--color-border);
-      padding-left: 10px;
+      font-size: 20px;
+      transition: transform 0.3s;
+      flex-shrink: 0;
     }
+    .task-item.expanded .task-expand-icon {
+      transform: rotate(180deg);
+    }
+    
+    /* Contenu détaillé (masqué par défaut) */
+    .task-details-expanded {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      padding: 0 20px;
+    }
+    .task-item.expanded .task-details-expanded {
+      max-height: 1000px;
+      padding: 0 20px 20px 20px;
+      transition: max-height 0.5s ease-in;
+    }
+    
+    .task-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 15px;
+      padding-top: 15px;
+      border-top: 1px solid var(--color-border);
+    }
+    
+    .task-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .task-info-label {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .task-info-value {
+      font-size: 14px;
+      color: var(--color-text-light);
+      font-weight: 500;
+    }
+    
     .task-cost-badge {
       display: inline-block;
       background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
@@ -402,25 +486,28 @@
       border-radius: 15px;
       font-size: 13px;
       font-weight: 600;
-      margin-right: 10px;
     }
-    .task-category-badge {
-      display: inline-block;
-      padding: 5px 12px;
-      border-radius: 15px;
-      font-size: 12px;
-      font-weight: 600;
-      color: white;
-      margin-top: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    .task-desc {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      border-left: 3px solid var(--color-border);
+      line-height: 1.6;
     }
+    
     .task-actions {
       display: flex;
       gap: 10px;
       margin-top: 15px;
-      border-top: 1px solid var(--color-border);
       padding-top: 15px;
+      border-top: 1px solid var(--color-border);
     }
+
+   
 
     /* Status */
     .status-bar {
@@ -812,48 +899,38 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
         flex-wrap: wrap;
       }
 
-      /* Tasks Mobile - FIX COMPLET */
+     /* Tasks Mobile - Accordéon */
       .task-item {
-        padding: 12px;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
         border-left-width: 4px;
       }
-      .task-header {
-        flex-direction: column;
+      .task-header-compact {
+        padding: 12px 15px;
+        gap: 10px;
+      }
+      .task-compact-left {
         gap: 8px;
-        margin-bottom: 8px;
       }
-      .task-details {
-        width: 100%;
+      .drag-handle {
+        font-size: 16px;
       }
-      .task-dates {
-        text-align: left;
-        font-size: 12px;
-        width: 100%;
+      .task-title-compact {
+        font-size: 14px;
       }
-      .task-title {
-        font-size: 15px;
-        line-height: 1.4;
-        word-break: break-word;
+      .task-category-badge-compact {
+        font-size: 10px;
+        padding: 3px 8px;
+      }
+      .task-expand-icon {
+        font-size: 18px;
+      }
+      .task-info-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
       }
       .task-desc {
         font-size: 13px;
-        margin-top: 8px;
-        padding-left: 8px;
-        word-break: break-word;
-      }
-      .task-cost-badge {
-        font-size: 11px;
-        padding: 4px 8px;
-        margin-right: 6px;
-        display: inline-block;
-        margin-top: 6px;
-      }
-      .task-category-badge {
-        font-size: 10px;
-        padding: 4px 8px;
-        margin-top: 6px;
-        display: inline-block;
+        padding: 10px;
       }
       .task-actions {
         flex-direction: column;
@@ -1562,51 +1639,151 @@ function checkAccess() {
       const totalCost = calculateTotalCost();
       document.getElementById("totalCostDisplay").textContent = formatCost(totalCost);
     }
-
-    // ============= RENDERING =============
+  // ============= RENDERING =============
     function renderTasks() {
       const container = document.getElementById("tasksList");
-      const sortedTasks = [...tasks].sort((a, b) => new Date(a.start) - new Date(b.start));
       
-      if (sortedTasks.length === 0) {
+      if (tasks.length === 0) {
         container.innerHTML = '<p class="text-muted">Aucune tâche pour le moment. Le plan est vide !</p>';
         return;
       }
       
-      container.innerHTML = sortedTasks.map(task => {
+      container.innerHTML = tasks.map((task, index) => {
         const category = categories.find(c => c.id === task.categoryId);
         const completedClass = task.completed ? 'completed' : '';
         const borderColor = task.completed ? 'var(--color-success)' : task.color; 
         const taskCost = formatCost(task.cost || 0);
 
         return `
-          <div class="task-item ${completedClass}" style="border-left-color: ${borderColor};">
-            <div class="task-header">
-              <div class="task-details">
-                <div class="task-title ${completedClass}">${task.name}</div>
-                <div style="margin-top: 5px;">
-                  <span class="task-cost-badge">Coût: ${taskCost}</span>
-                  ${category ? `<span class="task-category-badge" style="background: ${category.color};">${category.name}</span>` : ''}
+          <div class="task-item ${completedClass}" 
+               style="border-left-color: ${borderColor};"
+               data-task-id="${task.id}"
+               draggable="true"
+               ondragstart="handleDragStart(event, '${task.id}')"
+               ondragend="handleDragEnd(event)"
+               ondragover="handleDragOver(event)"
+               ondrop="handleDrop(event, '${task.id}')"
+               ondragleave="handleDragLeave(event)">
+            
+            <!-- En-tête compact (toujours visible) -->
+            <div class="task-header-compact" onclick="toggleTaskExpansion('${task.id}')">
+              <div class="task-compact-left">
+                <span class="drag-handle" onclick="event.stopPropagation()">⋮⋮</span>
+                <div class="task-title-compact ${completedClass}">${task.name}</div>
+                ${category ? `<span class="task-category-badge-compact" style="background: ${category.color};">${category.name}</span>` : ''}
+              </div>
+              <span class="task-expand-icon">▼</span>
+            </div>
+            
+            <!-- Détails (masqués par défaut) -->
+            <div class="task-details-expanded">
+              <div class="task-info-grid">
+                <div class="task-info-item">
+                  <span class="task-info-label">Début</span>
+                  <span class="task-info-value">${formatDate(task.start)}</span>
+                </div>
+                <div class="task-info-item">
+                  <span class="task-info-label">Fin</span>
+                  <span class="task-info-value">${formatDate(task.end)}</span>
+                </div>
+                <div class="task-info-item">
+                  <span class="task-info-label">Coût</span>
+                  <span class="task-cost-badge">${taskCost}</span>
+                </div>
+                <div class="task-info-item">
+                  <span class="task-info-label">Statut</span>
+                  <span class="task-info-value">${task.completed ? '✅ Terminée' : '🔄 En cours'}</span>
                 </div>
               </div>
-              <div class="task-dates">
-                Début: ${formatDate(task.start)}<br>
-                Fin: ${formatDate(task.end)}
+              
+              ${task.desc ? `<div class="task-desc">${task.desc}</div>` : ''}
+              
+              <div class="task-actions">
+                <button class="btn ${task.completed ? 'btn-success' : 'btn-secondary'} btn-small" onclick="event.stopPropagation(); toggleTaskCompletion('${task.id}')">
+                  ${task.completed ? '✅ Terminé' : '⭕ Marquer terminé'}
+                </button>
+                <button class="btn btn-secondary btn-small" onclick="event.stopPropagation(); editTask('${task.id}')">✏️ Modifier</button>
+                <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); deleteTask('${task.id}')">🗑️ Supprimer</button>
               </div>
-            </div>
-            ${task.desc ? `<div class="task-desc">${task.desc}</div>` : ''}
-            
-            <div class="task-actions">
-              <button class="btn ${task.completed ? 'btn-success' : 'btn-secondary'} btn-small" onclick="toggleTaskCompletion('${task.id}')">
-                ${task.completed ? '✅ Terminé' : '⭕ Marquer terminé'}
-              </button>
-              <button class="btn btn-secondary btn-small" onclick="editTask('${task.id}')">✏️ Modifier</button>
-              <button class="btn btn-danger btn-small" onclick="deleteTask('${task.id}')">🗑️ Supprimer</button>
             </div>
           </div>
         `;
       }).join('');
     }
+
+    // ============= ACCORDÉON (Expand/Collapse) =============
+    function toggleTaskExpansion(taskId) {
+      const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+      if (!taskElement) return;
+      
+      const isExpanded = taskElement.classList.contains('expanded');
+      
+      // Fermer toutes les autres tâches
+      document.querySelectorAll('.task-item.expanded').forEach(el => {
+        if (el.dataset.taskId !== taskId) {
+          el.classList.remove('expanded');
+        }
+      });
+      
+      // Toggle la tâche cliquée
+      taskElement.classList.toggle('expanded');
+    }
+
+    // ============= DRAG & DROP (Réordonnancement) =============
+    let draggedTaskId = null;
+
+    function handleDragStart(event, taskId) {
+      draggedTaskId = taskId;
+      event.currentTarget.classList.add('dragging');
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/html', event.currentTarget.innerHTML);
+    }
+
+    function handleDragEnd(event) {
+      event.currentTarget.classList.remove('dragging');
+      document.querySelectorAll('.task-item').forEach(item => {
+        item.classList.remove('drag-over');
+      });
+    }
+
+    function handleDragOver(event) {
+      if (event.preventDefault) {
+        event.preventDefault();
+      }
+      event.dataTransfer.dropEffect = 'move';
+      event.currentTarget.classList.add('drag-over');
+      return false;
+    }
+
+    function handleDragLeave(event) {
+      event.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(event, targetTaskId) {
+      if (event.stopPropagation) {
+        event.stopPropagation();
+      }
+      event.currentTarget.classList.remove('drag-over');
+
+      if (draggedTaskId === targetTaskId) return false;
+
+      // Trouver les indices
+      const draggedIndex = tasks.findIndex(t => t.id === draggedTaskId);
+      const targetIndex = tasks.findIndex(t => t.id === targetTaskId);
+
+      if (draggedIndex === -1 || targetIndex === -1) return false;
+
+      // Réorganiser le tableau
+      const [draggedTask] = tasks.splice(draggedIndex, 1);
+      tasks.splice(targetIndex, 0, draggedTask);
+
+      saveToCloud();
+      renderTasks();
+      updateStatus(`Tâche "${draggedTask.name}" déplacée.`);
+
+      return false;
+    }
+  
 
     function formatDate(dateString) {
       const date = new Date(dateString);
