@@ -1,0 +1,15 @@
+{
+  "name": "Terongis Planner",
+  "short_name": "Planner",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "logo_arbre.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
