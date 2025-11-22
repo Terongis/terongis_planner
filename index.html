@@ -1703,6 +1703,7 @@ height: 30px;
     let categories = [];
     let colorIndex = 0;
     let editingTaskId = null;
+    let isAdvancedFormOpen = false;
 
 // ============= ⚙️ FIREBASE CONFIGURATION (VOS CLÉS À REMPLACER) ⚙️ =============
 let app, db;
@@ -2395,7 +2396,7 @@ function checkAccess() {
       document.getElementById('taskCategoryModal').value = '';
       document.getElementById('taskCostModal').value = '0';
       document.getElementById('modalTitle').textContent = '🚀 Nouvelle Tâche';
-      document.getElementById('modalSubmitBtn').innerHTML = '➕ Ajouter';
+      document.getElementById('modalSubmitBtn').textContent = '➕ Ajouter la tâche'; // Utilisez .textContent pour du texte simple, et reprenez le texte initial
       document.getElementById('editModeNoticeModal').style.display = 'none';
       
       // Fermer le formulaire avancé
