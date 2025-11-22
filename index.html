@@ -1886,45 +1886,34 @@
 function renderGantt() {
   const container = document.getElementById("ganttContainer");
   const filteredTasks = tasks.filter(task => !task.completed && task.start && task.end);
-  
-  console.log("🎨 Rendu Gantt - Nombre de tâches:", filteredTasks.length);
-  
   if (filteredTasks.length === 0) { 
-    container.innerHTML = '<p class="text-muted" style="padding: 20px;">Aucune tâche active à afficher dans le Gantt.</p>';
+    container.innerHTML = '<p class="text-muted">Aucune tâche active à afficher.</p>';
     return;
   }
-  
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
   const allDates = filteredTasks.flatMap(t => [new Date(t.start), new Date(t.end)]);
   let minDate = allDates.length > 0 ? new Date(Math.min(...allDates)) : today;
   let maxDate = allDates.length > 0 ? new Date(Math.max(...allDates)) : today;
-  
   minDate = new Date(Math.min(minDate.getTime(), today.getTime()));
   maxDate = new Date(Math.max(maxDate.getTime(), today.getTime()));
   minDate.setHours(0, 0, 0, 0);
   maxDate.setHours(0, 0, 0, 0);
-  
   const startRange = new Date(minDate);
   startRange.setDate(startRange.getDate() - 7);
   const endRange = new Date(maxDate);
   endRange.setDate(endRange.getDate() + 7);
   startRange.setHours(0, 0, 0, 0);
   endRange.setHours(0, 0, 0, 0);
-  
   const days = [];
   const currentDate = new Date(startRange);
   while (currentDate.getTime() <= endRange.getTime()) {
     days.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  
   const tasksByCategory = new Map();
   const uncategorized = [];
-  
   filteredTasks.sort((a, b) => new Date(a.start) - new Date(b.start));
-  
   filteredTasks.forEach(task => {
     if (task.categoryId) {
       if (!tasksByCategory.has(task.categoryId)) {
@@ -1935,80 +1924,48 @@ function renderGantt() {
       uncategorized.push(task);
     }
   });
-  
   const sortedCategories = categories.filter(c => tasksByCategory.has(c.id));
   const allTasksRendered = [];
   sortedCategories.forEach(cat => allTasksRendered.push(...tasksByCategory.get(cat.id)));
   allTasksRendered.push(...uncategorized);
-  
   const isMobile = window.innerWidth <= 768;
   const dayWidth = isMobile ? 25 : 50;
-  const catColWidth = isMobile ? 80 : 150;
-  const taskColWidth = isMobile ? 120 : 200;
-  const fixedColWidth = catColWidth + taskColWidth;
+  const fixedColWidth = isMobile ? 200 : 350;
   const totalColWidth = days.length * dayWidth;
   const totalWidth = fixedColWidth + totalColWidth;
-  
   let html = `<div class="gantt-container" style="min-width: ${totalWidth}px;">`;
-  
   const years = [...new Set(days.map(d => d.getFullYear()))];
   const yearText = years.length > 1 ? years.join(' - ') : years[0];
   html += `<div class="gantt-year-header" style="min-width: 100%;">${yearText}</div>`;
-  
   html += `<div style="display: flex; min-width: ${totalWidth}px;">`;
-  html += `<div style="min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444; position: sticky; left: 0; z-index: 40;"></div>`;
+  html += `<div style="min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444;"></div>`;
   html += `<div class="gantt-months-row" style="flex-grow: 1;">`;
-  
-  // Créer un tableau ordonné des mois
-  const monthsArray = [];
-  let currentMonth = null;
-  let currentMonthData = null;
-  
-  days.forEach((day, index) => {
+  const monthMap = new Map();
+  days.forEach(day => {
     const year = day.getFullYear();
     const month = day.getMonth();
     const key = `${year}-${month}`;
-    
-    if (currentMonth !== key) {
-      if (currentMonthData) {
-        monthsArray.push(currentMonthData);
-      }
-      currentMonth = key;
-      currentMonthData = {
-        year,
-        month,
-        startIndex: index,
-        dayCount: 1
-      };
-    } else {
-      currentMonthData.dayCount++;
+    if (!monthMap.has(key)) {
+      monthMap.set(key, { year, month, days: [] });
     }
+    monthMap.get(key).days.push(day);
   });
-  
-  // Ajouter le dernier mois
-  if (currentMonthData) {
-    monthsArray.push(currentMonthData);
-  }
-  
-  // Afficher les mois dans l'ordre
-  monthsArray.forEach(({ year, month, dayCount }) => {
+  monthMap.forEach(({ year, month, days: monthDays }) => {
     const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
     const monthName = isMobile ? monthNames[month] : new Date(year, month).toLocaleDateString('fr-FR', { month: 'long' });
-    const width = dayCount * dayWidth;
+    const width = monthDays.length * dayWidth;
     const displayName = isMobile ? monthName : monthName.charAt(0).toUpperCase() + monthName.slice(1);
     html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px;">${displayName}</div>`;
   });
-  
   html += `</div></div>`;
-  
   const rowCount = allTasksRendered.length;
   let gridTemplate = `grid-template-rows: repeat(${rowCount}, auto);`;
+  const catColWidth = isMobile ? 80 : 150;
+  const taskColWidth = isMobile ? 120 : 200;
   let gridColumns = `grid-template-columns: ${catColWidth}px ${taskColWidth}px repeat(${days.length}, ${dayWidth}px);`;
-  
   html += `<div class="gantt-grid" style="${gridTemplate} ${gridColumns}; min-width: ${totalWidth}px;">`;
-  html += `<div class="gantt-header" style="position: sticky; left: 0; z-index: 50; background: var(--color-card-dark); box-shadow: 2px 0 5px rgba(0,0,0,0.3);">Catégorie</div>`;
-  html += `<div class="gantt-header" style="position: sticky; left: ${catColWidth}px; z-index: 50; background: var(--color-card-dark); box-shadow: 2px 0 5px rgba(0,0,0,0.3);">Tâche</div>`;
-  
+  html += `<div class="gantt-header">Catégorie</div>`;
+  html += `<div class="gantt-header">Tâche</div>`;
   const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
   days.forEach(day => {
     const isToday = day.toDateString() === today.toDateString();
@@ -2022,13 +1979,10 @@ function renderGantt() {
       <div>${day.getDate()}</div>
     </div>`;
   });
-  
   let renderedCategoryIds = new Set();
   let renderedUncategorizedHeader = false;
-  
   allTasksRendered.forEach((task) => {
     const category = categories.find(c => c.id === task.categoryId);
-    
     if (category && !renderedCategoryIds.has(category.id)) {
       const catTasksCount = tasksByCategory.get(category.id).length;
       const catName = isMobile && category.name.length > 8 ? category.name.substring(0, 8) + '...' : category.name;
@@ -2040,21 +1994,17 @@ function renderGantt() {
       html += `<div class="gantt-category-cell" style="grid-row: span ${uncategorizedCount}; border-left: 5px solid #6b7280;">${label}</div>`;
       renderedUncategorizedHeader = true;
     }
-    
     const completedClass = task.completed ? 'completed' : '';
     html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompletion('${task.id}')" title="${task.name}" style="--task-color: ${task.color};">
       <style>.gantt-task-name[title="${task.name.replace(/"/g, '&quot;')}"]:before { background: ${task.color}; }</style>
       ${task.name}
     </div>`;
-    
     const taskStart = new Date(task.start);
     taskStart.setHours(0, 0, 0, 0); 
     const taskEnd = new Date(task.end);
     taskEnd.setHours(0, 0, 0, 0); 
-    
     let taskStartCol = -1;
     let taskSpan = 0;
-    
     days.forEach((day, dayIdx) => {
       const dayNoTime = new Date(day);
       dayNoTime.setHours(0, 0, 0, 0);
@@ -2065,7 +2015,6 @@ function renderGantt() {
         taskSpan++;
       }
     });
-    
     for (let i = 0; i < days.length; i++) {
       if (i === taskStartCol && taskSpan > 0) {
         const barWidth = (taskSpan * dayWidth) - (isMobile ? 4 : 8);
@@ -2083,20 +2032,15 @@ function renderGantt() {
       }
     }
   });
-  
   html += `</div>`;
-  
   const todayColIndex = days.findIndex(day => day.toDateString() === today.toDateString());
   if (todayColIndex !== -1) {
     const todayOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
     const headerHeight = isMobile ? 70 : 90;
     html += `<div class="gantt-today-line" style="left: ${todayOffset}px; height: calc(100% - ${headerHeight}px); top: ${headerHeight}px;"></div>`;
   }
-  
   html += `</div>`;
-  
   container.innerHTML = html;
-  
   const wrapper = document.getElementById("ganttWrapper");
   if (todayColIndex !== -1 && wrapper) {
     const scrollOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
