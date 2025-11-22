@@ -977,9 +977,16 @@
         justify-content: center;
       }
       
-      .header-right {
-        display: none;
-      }
+     .header-right {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  font-size: 11px;
+}
+
+.status-text-small {
+  font-size: 11px;
+}
       
       .app-header-logo {
         height: 120px !important;
@@ -1484,8 +1491,16 @@ if (document.getElementById('shoppingList')) {
           renderTasks();
           renderGantt(); 
           updateStats();
-          const lastUpdate = new Date(data.lastUpdated).toLocaleTimeString('fr-FR');
-          updateStatus(`Dernière Maj : ${lastUpdate}`);
+         const lastUpdateDate = new Date(data.lastUpdated);
+const lastUpdate = lastUpdateDate.toLocaleDateString('fr-FR', { 
+  weekday: 'short', 
+  day: '2-digit', 
+  month: '2-digit' 
+}) + ' ' + lastUpdateDate.toLocaleTimeString('fr-FR', { 
+  hour: '2-digit', 
+  minute: '2-digit' 
+});
+updateStatus(`Dernière Maj : ${lastUpdate}`);
         } else {
           saveToCloud(); 
           updateStatus("Initialisé sur le Cloud.");
