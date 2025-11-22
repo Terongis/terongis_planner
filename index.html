@@ -1810,17 +1810,11 @@ function checkAccess() {
   
   if (code === MASTER_CODE) {
     
-    // NOUVEL APPEL UNIQUE (REMPLACE TOUT LE BLOC SUPPRIMÉ)
+    // NOUVEL APPEL UNIQUE À LA FONCTION D'INITIALISATION
     initApp(); 
     
   } else {
-    const errorEl = document.getElementById("codeError");
-    errorEl.style.display = "block";
-    document.getElementById("accessCode").value = "";
-    setTimeout(() => { errorEl.style.display = "none"; }, 2500);
-  }
-}
-  } else {
+    // Bloc de gestion de l'erreur
     const errorEl = document.getElementById("codeError");
     errorEl.style.display = "block";
     document.getElementById("accessCode").value = "";
