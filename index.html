@@ -851,6 +851,7 @@
   z-index: 30;
   cursor: pointer;
   user-select: none;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .gantt-category-cell:hover {
@@ -886,6 +887,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .gantt-task-name::before {
@@ -1187,20 +1189,6 @@
         padding: 6px 2px;
         font-size: 9px;
       }
-      .gantt-category-cell {
-  left: 0 !important;
-  min-width: 80px;
-  position: sticky;
-  z-index: 30;
-}
-
-.gantt-task-name {
-  left: 80px !important;
-  min-width: 120px;
-  position: sticky;
-  z-index: 25;
-  padding-left: 15px;
-}
       
       .gantt-header {
         padding: 8px 4px;
@@ -1213,17 +1201,23 @@
         font-size: 9px;
       }
       
-      .gantt-category-cell {
-        padding: 8px 4px;
-        font-size: 11px;
-        min-width: 80px;
-      }
-      
-      .gantt-task-name {
-        padding: 8px 4px;
-        font-size: 11px;
-        min-width: 120px;
-      }
+    .gantt-category-cell {
+  padding: 8px 4px !important;
+  font-size: 11px !important;
+  min-width: 80px !important;
+  left: 0 !important;
+  position: sticky !important;
+  z-index: 30 !important;
+}
+
+.gantt-task-name {
+  padding: 8px 4px !important;
+  font-size: 11px !important;
+  min-width: 120px !important;
+  left: 80px !important;
+  position: sticky !important;
+  z-index: 25 !important;
+}
       
       .gantt-cell {
         min-height: 35px;
