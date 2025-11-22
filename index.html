@@ -1213,6 +1213,7 @@ height: 30px;
         <h2 class="card-title">🏷️ Catégories</h2>
         <div class="form-row">
           <input type="text" id="categoryName" placeholder="Nom de la nouvelle catégorie" style="flex-grow: 1;" />
+          <input type="color" id="categoryColor" value="#3EDC9D" title="Couleur de la catégorie" style="width: 80px; height: 48px; cursor: pointer; border-radius: 8px;" />
           <button class="btn btn-primary" onclick="addCategory()">+ Ajouter</button>
         </div>
         <div id="categoriesList" class="category-list"></div>
@@ -1423,8 +1424,10 @@ function checkAccess() {
   }
 }
     // ============= CATEGORY MANAGEMENT =============
-    function addCategory() {
+  function addCategory() {
       const name = document.getElementById("categoryName").value.trim();
+      const color = document.getElementById("categoryColor").value;
+      
       if (!name) {
         alert("Veuillez entrer un nom de catégorie.");
         return;
@@ -1437,11 +1440,12 @@ function checkAccess() {
       const category = {
         id: Date.now().toString(),
         name,
-         color: generateTaskColor(categories.length),
+        color: color,
         createdAt: new Date().toISOString()
       };
       categories.push(category);
       document.getElementById("categoryName").value = "";
+      document.getElementById("categoryColor").value = "#3EDC9D"; // Réinitialise à la couleur par défaut
       saveToCloud();
       renderCategories();
       updateCategorySelect();
