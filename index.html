@@ -1395,15 +1395,26 @@
 
     // ============= CLOUD SYNC =============
     function saveToCloud() {
-      if (!db) return; 
+      if (!db) {
+        console.log("Firebase non initialisé, impossible de sauvegarder");
+        return;
+      }
+      
       const dataToSave = {
         tasks: tasks, 
         categories: categories,
         colorIndex: colorIndex,
         lastUpdated: new Date().toISOString()
       };
+      
+      console.log("Sauvegarde en cours...", dataToSave); // LOG DEBUG
+      
       db.collection("planners").doc(DOC_ID).set(dataToSave)
+        .then(() => {
+          console.log("✅ Sauvegarde réussie !");
+        })
         .catch((error) => {
+          console.error("❌ Erreur sauvegarde:", error);
           updateStatus(`Erreur sauvegarde : ${error.message}`);
         });
     }
@@ -1570,7 +1581,7 @@
     }
 
     // ============= RENDERING =============
-    function renderTasks() {
+   function renderTasks() {
       const container = document.getElementById("tasksList");
       if (tasks.length === 0) {
         container.innerHTML = '<p class="text-muted">Aucune tâche. Cliquez sur + pour ajouter !</p>';
@@ -1581,17 +1592,21 @@
         const completedClass = task.completed ? 'completed' : '';
         const borderColor = task.completed ? 'var(--color-success)' : task.color; 
         const taskCost = formatCost(task.cost || 0);
+        
+        // IMPORTANT : Échapper les guillemets pour éviter les conflits
+        const taskIdEscaped = task.id.replace(/'/g, "\\'");
+        
         return `
           <div class="task-item ${completedClass}" 
                style="border-left-color: ${borderColor};"
                data-task-id="${task.id}"
                draggable="true"
-               ondragstart="handleDragStart(event, '${task.id}')"
+               ondragstart="handleDragStart(event, '${taskIdEscaped}')"
                ondragend="handleDragEnd(event)"
                ondragover="handleDragOver(event)"
-               ondrop="handleDrop(event, '${task.id}')"
+               ondrop="handleDrop(event, '${taskIdEscaped}')"
                ondragleave="handleDragLeave(event)">
-            <div class="task-header-compact" onclick="toggleTaskExpansion('${task.id}')">
+            <div class="task-header-compact" onclick="toggleTaskExpansion('${taskIdEscaped}')">
               <div class="task-compact-left">
                 <span class="drag-handle" onclick="event.stopPropagation()">⋮⋮</span>
                 <div class="task-title-compact ${completedClass}">${task.name}</div>
@@ -1620,11 +1635,11 @@
               </div>
               ${task.desc ? `<div class="task-desc">${task.desc}</div>` : ''}
               <div class="task-actions">
-                <button class="btn ${task.completed ? 'btn-secondary' : 'btn-secondary'} btn-small" onclick="event.stopPropagation(); toggleTaskCompletion('${task.id}')">
+                <button class="btn btn-secondary btn-small" onclick="event.stopPropagation(); toggleTaskCompletion('${taskIdEscaped}')">
                   ${task.completed ? '✅ Terminé' : '⭕ Marquer terminé'}
                 </button>
-                <button class="btn btn-secondary btn-small" onclick="event.stopPropagation(); editTask('${task.id}')">✏️ Modifier</button>
-                <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); deleteTask('${task.id}')">🗑️ Supprimer</button>
+                <button class="btn btn-secondary btn-small" onclick="event.stopPropagation(); editTask('${taskIdEscaped}')">✏️ Modifier</button>
+                <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); deleteTask('${taskIdEscaped}')">🗑️ Supprimer</button>
               </div>
             </div>
           </div>
@@ -1936,7 +1951,7 @@
       document.getElementById('toggleAdvancedText').textContent = '➕ Plus d\'options';
     }
     
-    function submitTaskFromModal() {
+   function submitTaskFromModal() {
       const name = document.getElementById('taskNameModal').value.trim();
       const start = document.getElementById('taskStartModal').value;
       const end = document.getElementById('taskEndModal').value;
@@ -1949,24 +1964,29 @@
         return;
       }
 
+      if (start && end && new Date(start) > new Date(end)) {
+        alert("La date de début doit être avant ou égale à la date de fin.");
+        return;
+      }
+
       if (editingTaskId) {
-        if (start && end && new Date(start) > new Date(end)) {
-          alert("La date de début doit être avant ou égale à la date de fin.");
-          return;
-        }
+        // MODE ÉDITION
         const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
-        if (taskIndex === -1) return;
-        tasks[taskIndex] = {
-          ...tasks[taskIndex],
-          name,
-          start,
-          end,
-          desc,
-          categoryId,
-          cost
-        };
-        updateStatus(`Tâche "${name}" mise à jour.`);
+        if (taskIndex !== -1) {
+          tasks[taskIndex] = {
+            ...tasks[taskIndex],
+            name,
+            start,
+            end,
+            desc,
+            categoryId,
+            cost
+          };
+          updateStatus(`Tâche "${name}" mise à jour.`);
+        }
+        editingTaskId = null; // IMPORTANT : Réinitialiser après modification
       } else {
+        // MODE AJOUT
         const color = generateTaskColor(colorIndex);
         colorIndex++; 
         const newTask = {
