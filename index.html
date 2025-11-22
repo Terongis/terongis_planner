@@ -1263,16 +1263,22 @@ height: 30px;
   <script>
     // ============= CONFIGURATION =============
     const MASTER_CODE = "0508";
-    const TASK_COLORS = [
-      '#8b5cf6', // Violet
-      '#06b6d4', // Cyan
-      '#f97316', // Orange
-      '#ec4899', // Rose
-      '#3b82f6', // Bleu
-      '#a855f7', // Pourpre
-      '#ef4444', // Rouge
-      '#f59e0b', // Ambre 
-    ];
+    
+    // Générateur de couleurs HSL pour palette quasi-illimitée
+    function generateTaskColor(index) {
+      // Utilise la suite de Fibonacci pour une meilleure distribution
+      const goldenRatio = 0.618033988749895;
+      const hue = (index * goldenRatio * 360) % 360;
+      
+      // Saturation et luminosité variées pour plus de diversité
+      const saturationVariants = [65, 75, 85];
+      const lightnessVariants = [50, 55, 60];
+      
+      const saturation = saturationVariants[index % saturationVariants.length];
+      const lightness = lightnessVariants[Math.floor(index / saturationVariants.length) % lightnessVariants.length];
+      
+      return `hsl(${Math.round(hue)}, ${saturation}%, ${lightness}%)`;
+    }
 
     // ============= GLOBAL STATE =============
     let tasks = [];
@@ -1433,7 +1439,7 @@ function checkAccess() {
       const category = {
         id: Date.now().toString(),
         name,
-        color: TASK_COLORS[categories.length % TASK_COLORS.length],
+         color: generateTaskColor(categories.length),
         createdAt: new Date().toISOString()
       };
       categories.push(category);
@@ -1495,7 +1501,7 @@ function checkAccess() {
     // Si vous modifiez, assurez-vous que la fonction updateTask() gère l'enregistrement.
     updateTask(); 
   } else {
-    const color = TASK_COLORS[colorIndex % TASK_COLORS.length];
+      const color = generateTaskColor(colorIndex);
     colorIndex++;
 
     const task = {
