@@ -2335,10 +2335,7 @@ function checkAccess() {
       document.getElementById('stats-summary').textContent = summary;
     }
 
-    // ============= MODAL TÂCHE (Temporaire pour l'étape 1) =============
-   // ============= MODAL FORMULAIRE TÂCHE =============
-
-    
+   // ============= MODAL FORMULAIRE TÂCHE =============  
     function openTaskModal() {
       // Réinitialiser le formulaire
       clearModalForm();
@@ -2405,62 +2402,47 @@ function checkAccess() {
       document.getElementById('toggleAdvancedText').textContent = '➕ Plus d\'options';
     }
     
-    function submitTaskFromModal() {
-      const name = document.getElementById('taskNameModal').value.trim();
-      const start = document.getElementById('taskStartModal').value;
-      const end = document.getElementById('taskEndModal').value;
-      const desc = document.getElementById('taskDescModal').value.trim();
-      const categoryId = document.getElementById('taskCategoryModal').value;
-      const cost = parseFloat(document.getElementById('taskCostModal').value) || 0;
+function submitTaskFromModal() {
+  const name = document.getElementById('taskNameModal').value.trim();
+  const start = document.getElementById('taskStartModal').value;
+  const end = document.getElementById('taskEndModal').value;
+  const desc = document.getElementById('taskDescModal').value.trim();
+  const categoryId = document.getElementById('taskCategoryModal').value;
+  const cost = parseFloat(document.getElementById('taskCostModal').value) || 0;
 
-      if (!name) {
-        alert("Le nom de la tâche est obligatoire.");
-        return;
-      }
+  if (!name) {
+    alert("Le nom de la tâche est obligatoire.");
+    return;
+  }
 
-      if (editingTaskId) {
-        // Mode édition
-        if (start && end && new Date(start) > new Date(end)) {
-          alert("La date de début doit être avant ou égale à la date de fin.");
-          return;
-        }
+  if (editingTaskId) {
+    // Mode édition
+    if (start && end && new Date(start) > new Date(end)) {
+      alert("La date de début doit être avant ou égale à la date de fin.");
+      return;
+    }
 
-        const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
-        if (taskIndex === -1) return;
+    const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
+    if (taskIndex === -1) return;
 
-        tasks[taskIndex] = {
-          ...tasks[taskIndex],
-          name,
-          start,
-          end,
-          desc,
-          categoryId,
-          cost
-        };
+    tasks[taskIndex] = {
+      ...tasks[taskIndex],
+      name,
+      start,
+      end,
+      desc,
+      categoryId,
+      cost
+    };
 
-       updateStatus(`Tâche "${name}" mise à jour.`);
+    updateStatus(`Tâche "${name}" mise à jour.`);
     editingTaskId = null;
 
   } else {
-        const color = generateTaskColor(colorIndex);
-  colorIndex++; 
-  // ------------------------------------
-  
-  const newTask = {
-    id: Date.now().toString(),
-    name,
-    start,
-    end,
-    desc,
-    categoryId,
-    cost,
-    color, // <-- AJOUTEZ LA PROPRIÉTÉ COULEUR ICI
-    completed: false
-  };
-  tasks.push(newTask);
-  updateStatus(`Tâche "${name}" ajoutée.`);
-}
-    // Mode ajout
+    // Mode ajout - CLEAN
+    const color = generateTaskColor(colorIndex);
+    colorIndex++; 
+    
     const newTask = {
       id: Date.now().toString(),
       name,
@@ -2469,12 +2451,14 @@ function checkAccess() {
       desc,
       categoryId,
       cost,
+      color, // COULEUR CORRECTEMENT AJOUTÉE
       completed: false
     };
     tasks.push(newTask);
     updateStatus(`Tâche "${name}" ajoutée.`);
   }
 
+  // Actions finales communes aux deux modes
   saveToCloud();
   renderTasks();
   renderGantt();
