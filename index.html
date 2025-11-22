@@ -2034,16 +2034,22 @@
       const task = tasks.find(t => t.id === taskId);
       if (!task) return;
       
-      // IMPORTANT : Définir editingTaskId AVANT d'ouvrir le modal
+      // DÉFINIR editingTaskId EN PREMIER
       editingTaskId = taskId;
       
-      // Remplir le formulaire
+      // NE PAS appeler openTaskModal() car elle réinitialise le formulaire !
+      // À la place, ouvrir le modal manuellement :
+      
+      // Remplir le formulaire AVANT d'ouvrir
       document.getElementById('taskNameModal').value = task.name;
       document.getElementById('taskStartModal').value = task.start || '';
       document.getElementById('taskEndModal').value = task.end || '';
       document.getElementById('taskDescModal').value = task.desc || '';
       document.getElementById('taskCategoryModal').value = task.categoryId || '';
       document.getElementById('taskCostModal').value = task.cost || 0;
+      
+      // Mettre à jour le select des catégories
+      updateCategorySelect();
       
       // Changer le titre et le bouton
       document.getElementById('modalTitle').textContent = '✏️ Modifier la Tâche';
@@ -2055,17 +2061,23 @@
         isAdvancedFormOpen = true;
         document.getElementById('advancedForm').classList.add('active');
         document.getElementById('toggleAdvancedText').textContent = '➖ Moins d\'options';
+      } else {
+        isAdvancedFormOpen = false;
+        document.getElementById('advancedForm').classList.remove('active');
+        document.getElementById('toggleAdvancedText').textContent = '➕ Plus d\'options';
       }
       
       // Ouvrir le modal
       document.getElementById('taskModal').classList.add('active');
       document.body.style.overflow = 'hidden';
       
+      // Focus sur le champ nom
       setTimeout(() => {
         document.getElementById('taskNameModal').focus();
       }, 300);
       
       updateStatus("Mode édition activé.");
+      console.log("✏️ Mode édition pour tâche ID:", editingTaskId);
     }
   </script>
 </body>
