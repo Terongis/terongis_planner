@@ -2442,6 +2442,24 @@ function checkAccess() {
     editingTaskId = null;
 
   } else {
+        const color = generateTaskColor(colorIndex);
+  colorIndex++; 
+  // ------------------------------------
+  
+  const newTask = {
+    id: Date.now().toString(),
+    name,
+    start,
+    end,
+    desc,
+    categoryId,
+    cost,
+    color, // <-- AJOUTEZ LA PROPRIÉTÉ COULEUR ICI
+    completed: false
+  };
+  tasks.push(newTask);
+  updateStatus(`Tâche "${name}" ajoutée.`);
+}
     // Mode ajout
     const newTask = {
       id: Date.now().toString(),
