@@ -1932,8 +1932,8 @@ function checkAccess() {
       
       if (tasks.length === 0) {
         container.innerHTML = '<p class="text-muted">Aucune tâche pour le moment. Le plan est vide !</p>';
-        return;
         updateStats(); // Mise à jour auto des stats
+        return;
       }
       
       container.innerHTML = tasks.map((task, index) => {
