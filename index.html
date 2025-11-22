@@ -1244,7 +1244,11 @@ height: 30px;
           <button class="btn btn-secondary" id="cancelBtn" style="display:none;" onclick="cancelEdit()">Annuler</button>
         </div>
       </div>
-
+<div class="card" style="background: #3a2a1a; border: 2px solid var(--color-warning);">
+        <h2 class="card-title">⚠️ Migration des couleurs</h2>
+        <p class="text-muted">Cliquez une seule fois pour recalculer les couleurs de toutes vos tâches existantes.</p>
+        <button class="btn btn-warning" onclick="migrateTaskColors()">🎨 Migrer les couleurs</button>
+      </div>
       <div class="card">
         <h2 class="card-title">📋 Liste des Tâches Actives</h2>
         <div id="tasksList"></div>
@@ -1388,7 +1392,30 @@ function loadFromCloud() {
     document.getElementById("validateButton").addEventListener("click", function() {
       checkAccess();
     });
-
+// ============= MIGRATION COULEURS (À EXÉCUTER UNE SEULE FOIS) =============
+    function migrateTaskColors() {
+      let colorCounter = 0;
+      
+      // Recalculer les couleurs des catégories
+      categories.forEach((cat, index) => {
+        cat.color = generateTaskColor(index);
+      });
+      
+      // Recalculer les couleurs des tâches
+      tasks.forEach((task, index) => {
+        task.color = generateTaskColor(index);
+      });
+      
+      // Sauvegarder
+      saveToCloud();
+      renderCategories();
+      updateCategorySelect();
+      renderTasks();
+      renderGantt();
+      
+      updateStatus("✅ Migration des couleurs terminée ! Toutes les tâches ont de nouvelles couleurs.");
+      console.log(`${categories.length} catégories et ${tasks.length} tâches migrées.`);
+    }
 function checkAccess() {
   const code = document.getElementById("accessCode").value;
   
