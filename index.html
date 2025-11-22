@@ -1804,36 +1804,22 @@ function loadFromCloud() {
         checkAccess();
       }
     });
-
-   
    
 function checkAccess() {
   const code = document.getElementById("accessCode").value;
   
   if (code === MASTER_CODE) {
     
-    // 1. D'ABORD, AFFICHER L'APPLICATION (Ceci doit être la première instruction qui modifie l'UI)
-    document.getElementById("lockScreen").style.display = "none";
-    document.getElementById("appContainer").style.display = "block";
-      
-    // 2. RENDU INITIAL AVEC LES DONNÉES ACTUELLES
-    // Ceci s'assure que l'interface n'est pas vide avant que le Cloud ne réponde.
-    if (typeof renderTasks === 'function') {
-        renderCategories();
-        updateCategorySelect();
-        renderTasks();
-        renderGantt(); 
-        updateTotalCostDisplay();
-    }
+    // NOUVEL APPEL UNIQUE (REMPLACE TOUT LE BLOC SUPPRIMÉ)
+    initApp(); 
     
-    // 3. DÉMARRER LA SYNCHRONISATION CLOUD
-    if (typeof loadFromCloud === 'function') {
-        loadFromCloud(); 
-        updateStatus("Synchronisation Cloud en cours...");
-    } else {
-        updateStatus("⚠️ Cloud non connecté. Données locales seulement.");
-        console.error("Erreur: La fonction loadFromCloud n'a pas été trouvée.");
-    }
+  } else {
+    const errorEl = document.getElementById("codeError");
+    errorEl.style.display = "block";
+    document.getElementById("accessCode").value = "";
+    setTimeout(() => { errorEl.style.display = "none"; }, 2500);
+  }
+}
     
   } else {
     const errorEl = document.getElementById("codeError");
@@ -1843,6 +1829,34 @@ function checkAccess() {
   }
 }
     // ============= CATEGORY MANAGEMENT =============
+    function initApp() {
+    // 1. D'ABORD, AFFICHER L'APPLICATION
+    document.getElementById("lockScreen").style.display = "none";
+    document.getElementById("appContainer").style.display = "block";
+    
+    // 2. RENDU INITIAL (Afin de ne pas avoir un écran vide pendant la sync Cloud)
+    if (typeof renderTasks === 'function') {
+        renderCategories();
+        updateCategorySelect();
+        renderTasks();
+        renderGantt(); 
+        updateTotalCostDisplay();
+    }
+    
+    // 3. CHARGEMENT DU THÈME (Mode Clair/Sombre)
+    if (typeof loadThemePreference === 'function') {
+        loadThemePreference();
+    }
+    
+    // 4. DÉMARRER LA SYNCHRONISATION CLOUD
+    if (typeof loadFromCloud === 'function') {
+        loadFromCloud(); // C'est ici que l'écouteur démarre
+        updateStatus("Synchronisation Cloud en cours...");
+    } else {
+        updateStatus("⚠️ Cloud non connecté. Données locales seulement.");
+        console.error("Erreur: La fonction loadFromCloud n'a pas été trouvée.");
+    }
+}
   function addCategory() {
       const name = document.getElementById("categoryName").value.trim();
       const color = document.getElementById("categoryColor").value;
