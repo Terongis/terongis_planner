@@ -126,17 +126,37 @@
     .header {
       background: #2f3336;
       display: flex;
-      justify-content: space-between; /* Pour séparer le logo à gauche et les autres éléments à droite */
+      justify-content: space-between;
       align-items: center;
-      padding: 10px 20px; /* Ajustez le padding selon vos besoins */
+      padding: 15px 30px;
       margin-bottom: 0;
-}
-    .header-controls-right {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* Espacement entre les éléments */
-    margin-right: 20px;
-}
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .status-indicator-small {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-success);
+      animation: pulse 2s infinite;
+    }
+    
+    .status-text-small {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
    
  .card {
   background: #2f3336;
@@ -963,17 +983,19 @@ button:focus, .button:focus, a:focus, .category-btn:focus {
       }
       /* Header Mobile */
       .header {
-      display: flex;
-      justify-content: space-between; 
-      align-items: center; 
-      width: 100%; 
-      flex-shrink: 0;
-      box-sizing: border-box;
-      height: auto !important;
-      padding: 10px 20px;
-      margin: 0;
-  
-}
+        padding: 10px 15px;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .header-left {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .header-right {
+        display: none; /* Statut caché sur mobile */
+      }
       .header h1 {
         font-size: 24px;
       }
@@ -1376,19 +1398,20 @@ height: 30px;
 
 <div id="appContainer" style="display:none;">
     <div class="header">
-        <img src="logo_arbre.png" alt="Logo de l'application" class="app-header-logo">
-
-        <div class="header-controls-right">
+        <div class="header-left">
+          <img src="logo_arbre.png" alt="Logo de l'application" class="app-header-logo">
+        </div>
+        
+        <div class="header-right">
+          <span class="status-indicator-small"></span>
+          <span class="status-text-small" id="statusText">Prêt</span>
+        </div>
+    </div>
             <div class="status-info">
                 <span class="status-indicator"></span>
                 <span id="statusText">Prêt pour la planification</span>
             </div>
-            <div id="costTotalCard" class="cost-total-card">
-                <h3>COÛT TOTAL</h3>
-                <p id="totalCostDisplay">0,00 €</p>
-            </div>
-        </div>
-    </div>
+           
    <div class="app">
       <!-- Navigation par onglets -->
       <div class="tabs-container">
