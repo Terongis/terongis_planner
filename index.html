@@ -1946,20 +1946,25 @@ function renderGantt() {
   const catColWidth = isMobile ? 80 : 150;
   const taskColWidth = isMobile ? 120 : 200;
   const fixedColWidth = catColWidth + taskColWidth;
-  const totalColWidth = days.length * dayWidth;
-  const totalWidth = fixedColWidth + totalColWidth;
   
-  let html = `<div class="gantt-container" style="min-width: ${totalWidth}px;">`;
+  let html = `<div class="gantt-container">`;
   
+  // En-tête année
   const years = [...new Set(days.map(d => d.getFullYear()))];
   const yearText = years.length > 1 ? years.join(' - ') : years[0];
-  html += `<div class="gantt-year-header" style="min-width: 100%;">${yearText}</div>`;
+  html += `<div class="gantt-year-header">${yearText}</div>`;
   
-  html += `<div style="display: flex; min-width: ${totalWidth}px;">`;
-  html += `<div style="min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444; position: sticky; left: 0; z-index: 40;"></div>`;
-  html += `<div class="gantt-months-row" style="flex-grow: 1;">`;
+  // Conteneur principal avec scroll horizontal
+  html += `<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">`;
+  html += `<div style="display: inline-block; min-width: 100%;">`;
   
-  // Créer un tableau ordonné des mois
+  // ROW 1: Headers mois
+  html += `<div style="display: flex;">`;
+  
+  // Espace vide pour colonnes fixes
+  html += `<div style="min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444; position: sticky; left: 0; z-index: 45;"></div>`;
+  
+  // Créer tableau des mois
   const monthsArray = [];
   let currentMonth = null;
   let currentMonthData = null;
@@ -1974,83 +1979,143 @@ function renderGantt() {
         monthsArray.push(currentMonthData);
       }
       currentMonth = key;
-      currentMonthData = {
-        year,
-        month,
-        startIndex: index,
-        dayCount: 1
-      };
+      currentMonthData = { year, month, startIndex: index, dayCount: 1 };
     } else {
       currentMonthData.dayCount++;
     }
   });
   
-  // Ajouter le dernier mois
   if (currentMonthData) {
     monthsArray.push(currentMonthData);
   }
   
-  // Afficher les mois dans l'ordre
+  // Afficher les mois
   monthsArray.forEach(({ year, month, dayCount }) => {
     const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
     const monthName = isMobile ? monthNames[month] : new Date(year, month).toLocaleDateString('fr-FR', { month: 'long' });
     const width = dayCount * dayWidth;
     const displayName = isMobile ? monthName : monthName.charAt(0).toUpperCase() + monthName.slice(1);
-    html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px;">${displayName}</div>`;
+    html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px; flex-shrink: 0;">${displayName}</div>`;
   });
   
-  html += `</div></div>`;
+  html += `</div>`; // Fin row mois
   
-  const rowCount = allTasksRendered.length;
-  let gridTemplate = `grid-template-rows: repeat(${rowCount}, auto);`;
-  let gridColumns = `grid-template-columns: ${catColWidth}px ${taskColWidth}px repeat(${days.length}, ${dayWidth}px);`;
+  // ROW 2: Headers (Catégorie, Tâche, Jours)
+  html += `<div style="display: flex; background: var(--color-card-dark); border-bottom: 2px solid var(--color-primary-dark);">`;
   
-  html += `<div class="gantt-grid" style="${gridTemplate} ${gridColumns}; min-width: ${totalWidth}px;">`;
-  html += `<div class="gantt-header" style="position: sticky; left: 0; z-index: 50; background: var(--color-card-dark); box-shadow: 2px 0 5px rgba(0,0,0,0.3);">Catégorie</div>`;
-  html += `<div class="gantt-header" style="position: sticky; left: ${catColWidth}px; z-index: 50; background: var(--color-card-dark); box-shadow: 2px 0 5px rgba(0,0,0,0.3);">Tâche</div>`;
+  // Header Catégorie - STICKY
+  html += `<div class="gantt-header" style="min-width: ${catColWidth}px; position: sticky; left: 0; z-index: 50; border-right: 1px solid var(--color-border);">Catégorie</div>`;
   
+  // Header Tâche - STICKY
+  html += `<div class="gantt-header" style="min-width: ${taskColWidth}px; position: sticky; left: ${catColWidth}px; z-index: 50; border-right: 1px solid var(--color-border);">Tâche</div>`;
+  
+  // Headers jours
   const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
   days.forEach(day => {
     const isToday = day.toDateString() === today.toDateString();
     const dayOfWeek = day.getDay();
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
     const todayClass = isToday ? 'today' : '';
-    const weekendClass = isWeekend ? 'weekend' : '';
     const bgColor = isWeekend ? '#1a1a1a' : '';
-    html += `<div class="gantt-day-header ${todayClass} ${weekendClass}" style="min-width: ${dayWidth}px; background: ${bgColor};">
+    html += `<div class="gantt-day-header ${todayClass}" style="min-width: ${dayWidth}px; flex-shrink: 0; background: ${bgColor};">
       <div style="font-size: 10px; color: var(--color-text-muted); margin-bottom: 2px;">${dayNames[dayOfWeek]}</div>
       <div>${day.getDate()}</div>
     </div>`;
   });
   
+  html += `</div>`; // Fin row headers
+  
+  // ROWS: Lignes de tâches
   let renderedCategoryIds = new Set();
   let renderedUncategorizedHeader = false;
   
-  allTasksRendered.forEach((task) => {
+  allTasksRendered.forEach((task, taskIndex) => {
     const category = categories.find(c => c.id === task.categoryId);
     
+    // Nouvelle catégorie
     if (category && !renderedCategoryIds.has(category.id)) {
-      const catTasksCount = tasksByCategory.get(category.id).length;
-      const catName = isMobile && category.name.length > 8 ? category.name.substring(0, 8) + '...' : category.name;
-      html += `<div class="gantt-category-cell" style="grid-row: span ${catTasksCount}; border-left: 5px solid ${category.color};">${catName}</div>`;
+      const catTasks = tasksByCategory.get(category.id);
+      const catTasksCount = catTasks.length;
+      
+      // Première ligne de la catégorie
+      catTasks.forEach((catTask, catTaskIndex) => {
+        html += `<div style="display: flex; border-bottom: 1px solid #222;">`;
+        
+        // Cellule catégorie (span multiple lignes visuellement)
+        if (catTaskIndex === 0) {
+          const catName = isMobile && category.name.length > 8 ? category.name.substring(0, 8) + '...' : category.name;
+          html += `<div class="gantt-category-cell" style="min-width: ${catColWidth}px; position: sticky; left: 0; z-index: 40; border-left: 5px solid ${category.color}; ${catTasksCount > 1 ? 'border-bottom: none;' : ''}">${catName}</div>`;
+        } else {
+          html += `<div style="min-width: ${catColWidth}px; position: sticky; left: 0; z-index: 40; background: #16161c; border-right: 1px solid var(--color-border); ${catTaskIndex === catTasksCount - 1 ? '' : 'border-bottom: none;'}"></div>`;
+        }
+        
+        // Cellule nom tâche - STICKY
+        const completedClass = catTask.completed ? 'completed' : '';
+        html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompletion('${catTask.id}')" title="${catTask.name}" style="min-width: ${taskColWidth}px; position: sticky; left: ${catColWidth}px; z-index: 35;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: ${catTask.color}; margin-right: 8px;"></span>
+          ${catTask.name}
+        </div>`;
+        
+        // Cellules jours + barre
+        renderTaskRow(catTask, days, dayWidth, isMobile, html);
+        
+        html += `</div>`; // Fin ligne
+      });
+      
       renderedCategoryIds.add(category.id);
     } else if (!category && !renderedUncategorizedHeader) {
-      const uncategorizedCount = uncategorized.length;
-      const label = isMobile ? 'Sans Cat.' : 'Sans Catégorie';
-      html += `<div class="gantt-category-cell" style="grid-row: span ${uncategorizedCount}; border-left: 5px solid #6b7280;">${label}</div>`;
+      // Tâches sans catégorie
+      uncategorized.forEach((uncatTask, uncatIndex) => {
+        html += `<div style="display: flex; border-bottom: 1px solid #222;">`;
+        
+        if (uncatIndex === 0) {
+          const label = isMobile ? 'Sans Cat.' : 'Sans Catégorie';
+          html += `<div class="gantt-category-cell" style="min-width: ${catColWidth}px; position: sticky; left: 0; z-index: 40; border-left: 5px solid #6b7280; ${uncategorized.length > 1 ? 'border-bottom: none;' : ''}">${label}</div>`;
+        } else {
+          html += `<div style="min-width: ${catColWidth}px; position: sticky; left: 0; z-index: 40; background: #16161c; border-right: 1px solid var(--color-border); ${uncatIndex === uncategorized.length - 1 ? '' : 'border-bottom: none;'}"></div>`;
+        }
+        
+        const completedClass = uncatTask.completed ? 'completed' : '';
+        html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompletion('${uncatTask.id}')" title="${uncatTask.name}" style="min-width: ${taskColWidth}px; position: sticky; left: ${catColWidth}px; z-index: 35;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: ${uncatTask.color}; margin-right: 8px;"></span>
+          ${uncatTask.name}
+        </div>`;
+        
+        renderTaskRow(uncatTask, days, dayWidth, isMobile, html);
+        
+        html += `</div>`;
+      });
+      
       renderedUncategorizedHeader = true;
     }
-    
-    const completedClass = task.completed ? 'completed' : '';
-    html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompletion('${task.id}')" title="${task.name}" style="--task-color: ${task.color};">
-      <style>.gantt-task-name[title="${task.name.replace(/"/g, '&quot;')}"]:before { background: ${task.color}; }</style>
-      ${task.name}
-    </div>`;
-    
+  });
+  
+  // Ligne aujourd'hui
+  const todayColIndex = days.findIndex(day => day.toDateString() === today.toDateString());
+  if (todayColIndex !== -1) {
+    const todayOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
+    html += `<div class="gantt-today-line" style="position: absolute; left: ${todayOffset}px; top: 0; bottom: 0; width: 2px; background: var(--color-danger); z-index: 10; pointer-events: none;"></div>`;
+  }
+  
+  html += `</div></div></div>`; // Fin conteneurs
+  
+  container.innerHTML = html;
+  
+  // Scroll vers aujourd'hui
+  const wrapper = document.getElementById("ganttWrapper");
+  if (todayColIndex !== -1 && wrapper) {
+    setTimeout(() => {
+      const scrollOffset = fixedColWidth + (todayColIndex * dayWidth) - (wrapper.clientWidth / 2) + (dayWidth / 2);
+      wrapper.scrollLeft = Math.max(0, scrollOffset);
+    }, 100);
+  }
+  
+  // Fonction helper pour rendre une ligne de tâche
+  function renderTaskRow(task, days, dayWidth, isMobile, html) {
     const taskStart = new Date(task.start);
-    taskStart.setHours(0, 0, 0, 0); 
+    taskStart.setHours(0, 0, 0, 0);
     const taskEnd = new Date(task.end);
-    taskEnd.setHours(0, 0, 0, 0); 
+    taskEnd.setHours(0, 0, 0, 0);
     
     let taskStartCol = -1;
     let taskSpan = 0;
@@ -2066,41 +2131,27 @@ function renderGantt() {
       }
     });
     
+    let cellsRendered = 0;
     for (let i = 0; i < days.length; i++) {
       if (i === taskStartCol && taskSpan > 0) {
         const barWidth = (taskSpan * dayWidth) - (isMobile ? 4 : 8);
-        const barColor = task.completed ? 'var(--color-success)' : task.color; 
+        const barColor = task.completed ? 'var(--color-success)' : task.color;
         const leftOffset = isMobile ? 2 : 4;
-        html += `<div class="gantt-cell" style="grid-column: span ${taskSpan}; min-width: ${barWidth}px;">
-          <div class="gantt-bar" style="background: ${barColor}; width: ${barWidth}px; left: ${leftOffset}px;" onclick="toggleTaskCompletion('${task.id}')" title="Durée : ${taskSpan} jours"></div>
+        
+        html += `<div class="gantt-cell" style="min-width: ${taskSpan * dayWidth}px; flex-shrink: 0; position: relative;">
+          <div class="gantt-bar" style="background: ${barColor}; width: ${barWidth}px; left: ${leftOffset}px; position: absolute; top: 8px; bottom: 8px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer;" onclick="toggleTaskCompletion('${task.id}')" title="Durée : ${taskSpan} jours"></div>
         </div>`;
-        i += taskSpan - 1; 
-      } else if (i < taskStartCol || i >= taskStartCol + taskSpan || taskStartCol === -1) {
+        
+        i += taskSpan - 1;
+        cellsRendered += taskSpan;
+      } else {
         const cellDay = days[i];
         const isCellWeekend = cellDay && (cellDay.getDay() === 0 || cellDay.getDay() === 6);
         const cellBg = isCellWeekend ? '#1a1a1a' : '#2f3336';
-        html += `<div class="gantt-cell" style="min-width: ${dayWidth}px; background: ${cellBg};"></div>`;
+        html += `<div class="gantt-cell" style="min-width: ${dayWidth}px; flex-shrink: 0; background: ${cellBg}; border-right: 1px solid var(--color-border); border-bottom: 1px solid #222;"></div>`;
+        cellsRendered++;
       }
     }
-  });
-  
-  html += `</div>`;
-  
-  const todayColIndex = days.findIndex(day => day.toDateString() === today.toDateString());
-  if (todayColIndex !== -1) {
-    const todayOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
-    const headerHeight = isMobile ? 70 : 90;
-    html += `<div class="gantt-today-line" style="left: ${todayOffset}px; height: calc(100% - ${headerHeight}px); top: ${headerHeight}px;"></div>`;
-  }
-  
-  html += `</div>`;
-  
-  container.innerHTML = html;
-  
-  const wrapper = document.getElementById("ganttWrapper");
-  if (todayColIndex !== -1 && wrapper) {
-    const scrollOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
-    wrapper.scrollLeft = scrollOffset - (wrapper.clientWidth / 2);
   }
 }
 
