@@ -1,9 +1,9 @@
 const CACHE_NAME = 'terongis-planner-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/logo_arbre.png',
-  '/manifest.json',
+  './',
+  './index.html',
+  './logo_arbre.png',
+  './manifest.json',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap',
   'https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js',
   'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js'
