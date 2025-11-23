@@ -759,24 +759,26 @@
       border: 1px solid #7c5a2c;
     }
 
-    .gantt-container {
-      background: #2f3336;
-      border-radius: 10px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid var(--color-border);
-      position: relative;
-    }
+  .gantt-container {
+  background: #2f3336;
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--color-border);
+  position: relative;
+  overflow: hidden;
+}
     
-    .gantt-year-header {
-      background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
-      color: white;
-      padding: 18px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 18px;
-      border-radius: 10px 10px 0 0;
-      letter-spacing: 1px;
-    }
+   .gantt-year-header {
+  background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
+  color: white;
+  padding: 18px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 1px;
+  border-left: 1px solid #444;
+  border-right: 1px solid #444;
+}
     
     .gantt-months-row {
   display: flex;
@@ -1931,16 +1933,26 @@ function renderGantt() {
   allTasksRendered.push(...uncategorized);
   const isMobile = window.innerWidth <= 768;
   const dayWidth = isMobile ? 25 : 50;
-  const fixedColWidth = isMobile ? 200 : 350;
-  const totalColWidth = days.length * dayWidth;
-  const totalWidth = fixedColWidth + totalColWidth;
-  let html = `<div class="gantt-container" style="min-width: ${totalWidth}px;">`;
-  const years = [...new Set(days.map(d => d.getFullYear()))];
-  const yearText = years.length > 1 ? years.join(' - ') : years[0];
-  html += `<div class="gantt-year-header" style="min-width: 100%;">${yearText}</div>`;
-  html += `<div style="display: flex; min-width: ${totalWidth}px;">`;
-  html += `<div style="min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444;"></div>`;
- html += `<div class="gantt-months-row" style="display: flex; flex-grow: 0; flex-shrink: 0;">`;
+ const catColWidth = isMobile ? 80 : 150;
+const taskColWidth = isMobile ? 120 : 200;
+const fixedColWidth = catColWidth + taskColWidth;
+const totalColWidth = days.length * dayWidth;
+const totalWidth = fixedColWidth + totalColWidth;
+
+let html = `<div class="gantt-container" style="min-width: ${totalWidth}px;">`;
+
+// En-tête année
+const years = [...new Set(days.map(d => d.getFullYear()))];
+const yearText = years.length > 1 ? years.join(' - ') : years[0];
+html += `<div style="display: flex; min-width: 100%;">`;
+html += `<div style="width: ${fixedColWidth}px; min-width: ${fixedColWidth}px; flex-shrink: 0;"></div>`;
+html += `<div class="gantt-year-header" style="flex: 1; min-width: ${totalColWidth}px;">${yearText}</div>`;
+html += `</div>`;
+
+// Ligne des mois
+html += `<div style="display: flex; min-width: ${totalWidth}px;">`;
+html += `<div style="width: ${fixedColWidth}px; min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444; flex-shrink: 0;"></div>`;
+html += `<div class="gantt-months-row" style="display: flex; flex-shrink: 0; min-width: ${totalColWidth}px;">`;
   const monthMap = new Map();
   days.forEach(day => {
     const year = day.getFullYear();
