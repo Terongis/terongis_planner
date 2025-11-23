@@ -1072,15 +1072,16 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
     }
     
-    .gantt-today-line {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: var(--color-danger);
-      z-index: 10;
-      pointer-events: none;
-    }
+   .gantt-today-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-danger);
+  z-index: 50;
+  pointer-events: none;
+  transform: translateX(0);
+}
 
     *:focus {
       outline: none !important;
@@ -2236,11 +2237,11 @@ function renderGantt(zoomLevel = 'day', isFullscreen = false) {
   html += `</div>`;
   html += `</div>`;
   
-  const todayColIndex = days.findIndex(day => day.toDateString() === today.toDateString());
+const todayColIndex = days.findIndex(day => day.toDateString() === today.toDateString());
   if (todayColIndex !== -1) {
-    const todayOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
+    const todayOffset = (todayColIndex * dayWidth) + (dayWidth / 2);
     const headerHeight = isMobile ? 70 : 90;
-    html += `<div class="gantt-today-line" style="left: ${todayOffset}px; height: calc(100% - ${headerHeight}px); top: ${headerHeight}px;"></div>`;
+    html += `<div class="gantt-today-line" style="position: absolute; left: ${todayOffset}px; height: calc(100% - ${headerHeight}px); top: ${headerHeight}px;"></div>`;
   }
   html += `</div>`;
   
