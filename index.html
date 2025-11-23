@@ -759,46 +759,32 @@
       border: 1px solid #7c5a2c;
     }
 
-  .gantt-container {
-  background: #2f3336;
-  border-radius: 10px;
-  box-shadow: var(--shadow-soft);
-  border: 1px solid var(--color-border);
-  position: relative;
-  overflow: hidden;
-}
+    .gantt-container {
+      background: #2f3336;
+      border-radius: 10px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--color-border);
+      position: relative;
+    }
     
-   .gantt-year-header {
-  background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
-  color: white;
-  padding: 18px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: 1px;
-  border-left: 1px solid #444;
-  border-right: 1px solid #444;
-}
+    .gantt-year-header {
+      background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
+      color: white;
+      padding: 18px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
     
-    .gantt-months-row {
-  display: flex;
-  background: #22222a;
-  border-left: 1px solid #444;
-  border-right: 1px solid #444;
-  min-width: fit-content;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-    
-   .gantt-month-cell {
-  text-align: center;
-  padding: 10px 5px;
-  font-weight: 600;
-  color: var(--color-text-light);
-  border-right: 1px solid #444;
-  background: #22222a;
-  flex-shrink: 0;
-}
+    .gantt-month-cell {
+      text-align: center;
+      padding: 10px 5px;
+      font-weight: 600;
+      color: var(--color-text-light);
+      border-right: 1px solid #444;
+      background: #22222a;
+    }
     
     .gantt-grid {
       display: grid;
@@ -1174,90 +1160,57 @@
       }
 
       #ganttWrapper {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        margin: 0 -15px;
-        padding: 0 15px;
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+        margin: 0 -15px !important;
+        padding: 0 !important;
       }
       
       .gantt-container {
-        min-width: 100%;
-        border-radius: 8px;
+        border-radius: 8px !important;
       }
       
       .gantt-year-header {
-        padding: 10px;
-        font-size: 14px;
+        padding: 10px !important;
+        font-size: 14px !important;
       }
       
       .gantt-month-cell {
-        min-width: 40px !important;
-        width: 40px !important;
-        padding: 6px 2px;
-        font-size: 9px;
+        padding: 6px 2px !important;
+        font-size: 9px !important;
       }
       
       .gantt-header {
-        padding: 8px 4px;
-        font-size: 11px;
+        padding: 8px 4px !important;
+        font-size: 11px !important;
       }
       
       .gantt-day-header {
         min-width: 25px !important;
-        padding: 6px 2px;
-        font-size: 9px;
-      }
-      #ganttWrapper {
-        overflow-x: auto !important;
-        overflow-y: visible !important;
-        -webkit-overflow-scrolling: touch !important;
-        margin: 0 -15px !important;
-        padding: 0 15px !important;
-        position: relative !important;
+        padding: 6px 2px !important;
+        font-size: 9px !important;
       }
       
-      .gantt-container {
-        min-width: 100% !important;
-        border-radius: 8px !important;
-        position: relative !important;
+      .gantt-category-cell {
+        padding: 8px 4px !important;
+        font-size: 11px !important;
+        min-width: 80px !important;
+        max-width: 80px !important;
+        width: 80px !important;
+        left: 0 !important;
       }
-      
-      .gantt-grid {
-        position: relative !important;
-      }
-      
-      .gantt-header {
-        position: sticky !important;
-        top: 0 !important;
-        background: var(--color-card-dark) !important;
-        z-index: 45 !important;
-      }
- .gantt-category-cell {
-  padding: 8px 4px !important;
-  font-size: 11px !important;
-  min-width: 80px !important;
-  max-width: 80px !important;
-  width: 80px !important;
-  left: 0 !important;
-  position: sticky !important;
-  z-index: 40 !important;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5) !important;
-}
 
-.gantt-task-name {
-  padding: 8px 4px !important;
-  font-size: 11px !important;
-  min-width: 120px !important;
-  max-width: 120px !important;
-  width: 120px !important;
-  left: 80px !important;
-  position: sticky !important;
-  z-index: 35 !important;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5) !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
+      .gantt-task-name {
+        padding: 8px 4px !important;
+        font-size: 11px !important;
+        min-width: 120px !important;
+        max-width: 120px !important;
+        width: 120px !important;
+        left: 80px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+      }
       
       .gantt-cell {
         min-height: 35px;
@@ -1337,7 +1290,7 @@
         <div class="card">
           <h2 class="card-title">◫ Visualisation Gantt</h2>
           <p class="text-muted mb-3">Cliquez sur une barre dans le diagramme pour marquer la tâche comme terminée.</p>
-          <div id="ganttWrapper" style="overflow-x: auto;">
+          <div id="ganttWrapper">
             <div id="ganttContainer" class="gantt-container"></div>
           </div>
         </div>
@@ -1449,7 +1402,7 @@
           </div>
           
           <div class="form-section">
-            <label class="form-section-title">📄 Description</label>
+            <label class="form-section-title">📝 Description</label>
             <textarea id="taskDescModal" placeholder="Détails supplémentaires (facultatif)" rows="4"></textarea>
           </div>
         </div>
@@ -1528,7 +1481,7 @@
         lastUpdated: new Date().toISOString()
       };
       
-      console.log("Sauvegarde en cours...", dataToSave); // LOG DEBUG
+      console.log("Sauvegarde en cours...", dataToSave);
       
       db.collection("planners").doc(DOC_ID).set(dataToSave)
         .then(() => {
@@ -1551,14 +1504,13 @@
   console.log("✅ Firebase initialisé, tentative de connexion...");
   updateStatus("Connexion au Cloud...");
   
-  // Timeout de sécurité
   let timeoutId = setTimeout(() => {
     console.warn("⏱️ Timeout Firebase - tentative de reconnexion...");
     updateStatus("Reconnexion...");
-  }, 5000); // 5 secondes
+  }, 5000);
   
   db.collection("planners").doc(DOC_ID).onSnapshot((doc) => {
-    clearTimeout(timeoutId); // Annuler le timeout si on reçoit une réponse
+    clearTimeout(timeoutId);
     
     console.log("📦 Snapshot reçu");
     console.log("Document existe ?", doc.exists);
@@ -1763,7 +1715,6 @@
         const borderColor = task.completed ? 'var(--color-success)' : task.color; 
         const taskCost = formatCost(task.cost || 0);
         
-        // IMPORTANT : Échapper les guillemets pour éviter les conflits
         const taskIdEscaped = task.id.replace(/'/g, "\\'");
         
         return `
@@ -1933,26 +1884,30 @@ function renderGantt() {
   allTasksRendered.push(...uncategorized);
   const isMobile = window.innerWidth <= 768;
   const dayWidth = isMobile ? 25 : 50;
- const catColWidth = isMobile ? 80 : 150;
-const taskColWidth = isMobile ? 120 : 200;
-const fixedColWidth = catColWidth + taskColWidth;
-const totalColWidth = days.length * dayWidth;
-const totalWidth = fixedColWidth + totalColWidth;
-
-let html = `<div class="gantt-container" style="min-width: ${totalWidth}px;">`;
-
-// En-tête année
-const years = [...new Set(days.map(d => d.getFullYear()))];
-const yearText = years.length > 1 ? years.join(' - ') : years[0];
-html += `<div style="display: flex; min-width: 100%;">`;
-html += `<div style="width: ${fixedColWidth}px; min-width: ${fixedColWidth}px; flex-shrink: 0;"></div>`;
-html += `<div class="gantt-year-header" style="flex: 1; min-width: ${totalColWidth}px;">${yearText}</div>`;
-html += `</div>`;
-
-// Ligne des mois
-html += `<div style="display: flex; min-width: ${totalWidth}px;">`;
-html += `<div style="width: ${fixedColWidth}px; min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444; flex-shrink: 0;"></div>`;
-html += `<div class="gantt-months-row" style="display: flex; flex-shrink: 0; min-width: ${totalColWidth}px;">`;
+  const catColWidth = isMobile ? 80 : 150;
+  const taskColWidth = isMobile ? 120 : 200;
+  const fixedColWidth = catColWidth + taskColWidth;
+  const totalColWidth = days.length * dayWidth;
+  const totalWidth = fixedColWidth + totalColWidth;
+  
+  let html = `<div class="gantt-container">`;
+  
+  // En-tête année - wrapper complet
+  const years = [...new Set(days.map(d => d.getFullYear()))];
+  const yearText = years.length > 1 ? years.join(' - ') : years[0];
+  html += `<div style="display: flex; width: 100%;">`;
+  html += `<div style="width: ${fixedColWidth}px; min-width: ${fixedColWidth}px; background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%); flex-shrink: 0;"></div>`;
+  html += `<div class="gantt-year-header" style="flex: 1;">${yearText}</div>`;
+  html += `</div>`;
+  
+  // Wrapper scrollable pour mois et grille
+  html += `<div style="overflow-x: auto; width: 100%;">`;
+  html += `<div style="min-width: ${totalWidth}px;">`;
+  
+  // Ligne des mois
+  html += `<div style="display: flex;">`;
+  html += `<div style="width: ${fixedColWidth}px; min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444; flex-shrink: 0;"></div>`;
+  html += `<div style="display: flex; flex-shrink: 0;">`;
   const monthMap = new Map();
   days.forEach(day => {
     const year = day.getFullYear();
@@ -1968,15 +1923,13 @@ html += `<div class="gantt-months-row" style="display: flex; flex-shrink: 0; min
     const monthName = isMobile ? monthNames[month] : new Date(year, month).toLocaleDateString('fr-FR', { month: 'long' });
     const width = monthDays.length * dayWidth;
     const displayName = isMobile ? monthName : monthName.charAt(0).toUpperCase() + monthName.slice(1);
-   html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px; flex-shrink: 0;">${displayName}</div>`;
+    html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px; flex-shrink: 0;">${displayName}</div>`;
   });
   html += `</div></div>`;
   const rowCount = allTasksRendered.length;
   let gridTemplate = `grid-template-rows: repeat(${rowCount}, auto);`;
-  const catColWidth = isMobile ? 80 : 150;
-  const taskColWidth = isMobile ? 120 : 200;
   let gridColumns = `grid-template-columns: ${catColWidth}px ${taskColWidth}px repeat(${days.length}, ${dayWidth}px);`;
-  html += `<div class="gantt-grid" style="${gridTemplate} ${gridColumns}; min-width: ${totalWidth}px;">`;
+  html += `<div class="gantt-grid" style="${gridTemplate} ${gridColumns};">`;
   html += `<div class="gantt-header">Catégorie</div>`;
   html += `<div class="gantt-header">Tâche</div>`;
   const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
@@ -2046,6 +1999,7 @@ html += `<div class="gantt-months-row" style="display: flex; flex-shrink: 0; min
     }
   });
   html += `</div>`;
+  html += `</div>`; // Fin wrapper scrollable
   const todayColIndex = days.findIndex(day => day.toDateString() === today.toDateString());
   if (todayColIndex !== -1) {
     const todayOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
@@ -2056,8 +2010,11 @@ html += `<div class="gantt-months-row" style="display: flex; flex-shrink: 0; min
   container.innerHTML = html;
   const wrapper = document.getElementById("ganttWrapper");
   if (todayColIndex !== -1 && wrapper) {
-    const scrollOffset = fixedColWidth + (todayColIndex * dayWidth) + (dayWidth / 2);
-    wrapper.scrollLeft = scrollOffset - (wrapper.clientWidth / 2);
+    const scrollOffset = (todayColIndex * dayWidth) + (dayWidth / 2);
+    const scrollableDiv = wrapper.querySelector('[style*="overflow-x"]');
+    if (scrollableDiv) {
+      scrollableDiv.scrollLeft = scrollOffset - (scrollableDiv.clientWidth / 2);
+    }
   }
 }
 
@@ -2074,28 +2031,30 @@ html += `<div class="gantt-months-row" style="display: flex; flex-shrink: 0; min
         updateStats();
       }
     }
-// ============= LISTE DE COURSES =============
-let shoppingListContent = '';
 
-function saveShoppingList() {
-  shoppingListContent = document.getElementById('shoppingList').value;
-  if (!db) {
-    console.log("Firebase non initialisé");
-    return;
-  }
-  
-  db.collection("planners").doc(DOC_ID).update({
-    shoppingList: shoppingListContent,
-    shoppingListUpdated: new Date().toISOString()
-  })
-  .then(() => {
-    updateStatus("Liste de courses sauvegardée ✓");
-  })
-  .catch((error) => {
-    console.error("Erreur sauvegarde liste:", error);
-    updateStatus(`Erreur : ${error.message}`);
-  });
-}
+    // ============= LISTE DE COURSES =============
+    let shoppingListContent = '';
+
+    function saveShoppingList() {
+      shoppingListContent = document.getElementById('shoppingList').value;
+      if (!db) {
+        console.log("Firebase non initialisé");
+        return;
+      }
+      
+      db.collection("planners").doc(DOC_ID).update({
+        shoppingList: shoppingListContent,
+        shoppingListUpdated: new Date().toISOString()
+      })
+      .then(() => {
+        updateStatus("Liste de courses sauvegardée ✓");
+      })
+      .catch((error) => {
+        console.error("Erreur sauvegarde liste:", error);
+        updateStatus(`Erreur : ${error.message}`);
+      });
+    }
+
     // ============= STATISTIQUES =============
     function updateStats() {
       const completed = tasks.filter(t => t.completed).length;
@@ -2166,7 +2125,7 @@ function saveShoppingList() {
       document.getElementById('toggleAdvancedText').textContent = '➕ Plus d\'options';
     }
     
-   function submitTaskFromModal() {
+    function submitTaskFromModal() {
       const name = document.getElementById('taskNameModal').value.trim();
       const start = document.getElementById('taskStartModal').value;
       const end = document.getElementById('taskEndModal').value;
@@ -2178,10 +2137,9 @@ function saveShoppingList() {
         alert("Le nom de la tâche est obligatoire.");
         return;
       }
-      // LOG DEBUG
+      
       console.log("editingTaskId =", editingTaskId);
       console.log("Mode :", editingTaskId ? "ÉDITION" : "AJOUT");
-
 
       if (start && end && new Date(start) > new Date(end)) {
         alert("La date de début doit être avant ou égale à la date de fin.");
@@ -2189,7 +2147,6 @@ function saveShoppingList() {
       }
 
       if (editingTaskId) {
-         // MODE ÉDITION
         console.log("✏️ Modification de la tâche:", editingTaskId);
         const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
         console.log("Index trouvé:", taskIndex);
@@ -2209,9 +2166,8 @@ function saveShoppingList() {
         } else {
           console.error("❌ Tâche non trouvée avec l'ID:", editingTaskId);
         }
-        editingTaskId = null; // Réinitialiser
+        editingTaskId = null;
       } else {
-        // MODE AJOUT
         console.log("➕ Ajout d'une nouvelle tâche");
         const color = generateTaskColor(colorIndex);
         colorIndex++; 
@@ -2238,41 +2194,31 @@ function saveShoppingList() {
       updateStats();
       closeTaskModal();
       
-      // Retourner à l'onglet tâches
       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
       document.querySelector('.tab-button').classList.add('active');
       document.getElementById('tab-tasks').classList.add('active');
     }
 
-   function editTask(taskId) {
+    function editTask(taskId) {
       const task = tasks.find(t => t.id === taskId);
       if (!task) return;
       
-      // DÉFINIR editingTaskId EN PREMIER
       editingTaskId = taskId;
       
-      // NE PAS appeler openTaskModal() car elle réinitialise le formulaire !
-      // À la place, ouvrir le modal manuellement :
-     
-     // Mettre à jour le select des catégories
       updateCategorySelect();
       
-      // Remplir le formulaire AVANT d'ouvrir
       document.getElementById('taskNameModal').value = task.name;
       document.getElementById('taskStartModal').value = task.start || '';
       document.getElementById('taskEndModal').value = task.end || '';
       document.getElementById('taskDescModal').value = task.desc || '';
       document.getElementById('taskCategoryModal').value = task.categoryId || '';
       document.getElementById('taskCostModal').value = task.cost || 0;
-            
       
-      // Changer le titre et le bouton
       document.getElementById('modalTitle').textContent = '✏️ Modifier la Tâche';
       document.getElementById('modalSubmitBtn').textContent = '💾 Sauvegarder';
       document.getElementById('editModeNoticeModal').style.display = 'block';
       
-      // Ouvrir le formulaire avancé si nécessaire
       if (task.desc || task.categoryId || task.cost > 0) {
         isAdvancedFormOpen = true;
         document.getElementById('advancedForm').classList.add('active');
@@ -2283,11 +2229,9 @@ function saveShoppingList() {
         document.getElementById('toggleAdvancedText').textContent = '➕ Plus d\'options';
       }
       
-      // Ouvrir le modal
       document.getElementById('taskModal').classList.add('active');
       document.body.style.overflow = 'hidden';
       
-      // Focus sur le champ nom
       setTimeout(() => {
         document.getElementById('taskNameModal').focus();
       }, 300);
@@ -2303,8 +2247,6 @@ function saveShoppingList() {
     .catch((err) => console.error("SW ERROR", err));
   }
 </script>
-
-
 
 </body>
 </html>
