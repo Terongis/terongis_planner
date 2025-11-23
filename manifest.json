@@ -2,7 +2,7 @@
   "name": "Terongis Planner",
   "short_name": "Terongis",
   "description": "Gestionnaire de tâches et planification Gantt",
-  "start_url": "/",
+  "start_url": "/terongis_planner/",
   "display": "standalone",
   "background_color": "#2f3336",
   "theme_color": "#3EDC9D",
