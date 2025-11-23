@@ -1332,18 +1332,19 @@
         left: 0 !important;
       }
 
-   .gantt-task-name {
-  min-width: 120px; /* Largeur minimale */
-  width: auto; /* Largeur automatique */
-  max-width: 100%; /* Ne dépasse pas du conteneur parent */
-  left: 0 !important; /* Aligne à gauche */
-  padding: 8px 10px !important;
-  font-size: 12px !important;
-  overflow: visible !important;
-  text-overflow: unset !important;
-  white-space: normal !important;
-  height: auto !important;
-  word-break: break-word; /* Casse les mots longs si nécessaire */
+  .gantt-task-name {
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+    min-width: 180px !important;
+    max-width: none !important;
+    width: auto !important;
+    left: 80px !important;
+
+    /* Affichage FULL texte */
+    overflow: visible !important;
+    text-overflow: unset !important;
+    white-space: normal !important;
+    word-break: break-word !important;
 }
       
       .gantt-cell {
