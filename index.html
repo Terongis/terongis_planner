@@ -1295,9 +1295,12 @@
         padding: 0 !important;
       }
       
-      .gantt-container {
-        border-radius: 8px !important;
-      }
+     .gantt-container {
+  width: 100%;
+  overflow-x: auto; /* Permet le défilement horizontal si nécessaire */
+  display: block; /* Assure un comportement standard */
+  position: relative; /* Permet un positionnement correct des enfants */
+}
       
       .gantt-year-header {
         padding: 10px !important;
