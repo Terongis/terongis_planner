@@ -1332,7 +1332,7 @@
         left: 0 !important;
       }
 
-  .gantt-task-name {
+.gantt-task-name {
     padding: 8px 10px !important;
     font-size: 12px !important;
     min-width: 180px !important;
@@ -1340,12 +1340,36 @@
     width: auto !important;
     left: 80px !important;
 
+    overflow: visible !important;
+    text-overflow: unset !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+
+    position: relative;
+    z-index: 3 !important;
+}
     /* Affichage FULL texte */
     overflow: visible !important;
     text-overflow: unset !important;
     white-space: normal !important;
     word-break: break-word !important;
 }
+     .gantt-row {
+    height: auto !important;
+    min-height: 40px !important;
+    overflow: visible !important;
+}
+.gantt-task {
+    height: auto !important;
+    min-height: 40px !important;
+    overflow: visible !important;
+}
+
+
+.gantt-bar {
+    z-index: 1 !important;
+}
+
       
       .gantt-cell {
         min-height: 35px;
