@@ -779,23 +779,24 @@
     }
     
     .gantt-months-row {
-      display: flex;
-      background: #22222a;
-      border-left: 1px solid #444;
-      border-right: 1px solid #444;
-      min-width: fit-content;
-      font-size: 13px;
-    }
+  display: flex;
+  background: #22222a;
+  border-left: 1px solid #444;
+  border-right: 1px solid #444;
+  min-width: fit-content;
+  font-size: 13px;
+  flex-shrink: 0;
+}
     
-    .gantt-month-cell {
-      text-align: center;
-      padding: 10px 5px;
-      font-weight: 600;
-      color: var(--color-text-light);
-      border-right: 1px solid #444;
-      background: #22222a;
-      min-width: 100px;
-    }
+   .gantt-month-cell {
+  text-align: center;
+  padding: 10px 5px;
+  font-weight: 600;
+  color: var(--color-text-light);
+  border-right: 1px solid #444;
+  background: #22222a;
+  flex-shrink: 0;
+}
     
     .gantt-grid {
       display: grid;
@@ -1939,7 +1940,7 @@ function renderGantt() {
   html += `<div class="gantt-year-header" style="min-width: 100%;">${yearText}</div>`;
   html += `<div style="display: flex; min-width: ${totalWidth}px;">`;
   html += `<div style="min-width: ${fixedColWidth}px; background: #22222a; border-right: 1px solid #444;"></div>`;
-  html += `<div class="gantt-months-row" style="flex-grow: 1;">`;
+ html += `<div class="gantt-months-row" style="display: flex; flex-grow: 0; flex-shrink: 0;">`;
   const monthMap = new Map();
   days.forEach(day => {
     const year = day.getFullYear();
@@ -1955,7 +1956,7 @@ function renderGantt() {
     const monthName = isMobile ? monthNames[month] : new Date(year, month).toLocaleDateString('fr-FR', { month: 'long' });
     const width = monthDays.length * dayWidth;
     const displayName = isMobile ? monthName : monthName.charAt(0).toUpperCase() + monthName.slice(1);
-    html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px;">${displayName}</div>`;
+   html += `<div class="gantt-month-cell" style="width: ${width}px; min-width: ${width}px; flex-shrink: 0;">${displayName}</div>`;
   });
   html += `</div></div>`;
   const rowCount = allTasksRendered.length;
