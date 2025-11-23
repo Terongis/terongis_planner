@@ -1295,13 +1295,14 @@
         padding: 0 !important;
       }
       
-    .gantt-container {
+  .gantt-container {
+  display: table;
   width: 100%;
-  overflow-x: auto; /* Permet le défilement horizontal si nécessaire */
-  display: table; /* Permet un comportement de tableau */
-  border-collapse: collapse; /* Évite les espaces entre les cellules */
-  border-radius: 8px !important;
+  border-collapse: collapse;
+  overflow-x: auto;
+  border-radius: 8px;
 }
+
 
       
       .gantt-year-header {
@@ -1325,47 +1326,48 @@
         font-size: 9px !important;
       }
       
- .gantt-category-cell {
-  min-width: 120px; /* Largeur minimale pour éviter un conteneur trop étroit */
-  width: auto; /* Largeur automatique en fonction du contenu */
-  max-width: 100%; /* Ne dépasse pas du conteneur parent */
-  white-space: normal !important;
-  word-break: break-word !important;
+.gantt-category-cell {
+  display: table-cell;
+  min-width: 120px;
+  width: auto;
+  max-width: 200px; /* Limite pour éviter un étirement excessif */
+  white-space: normal;
+  word-break: break-word;
   padding: 8px 10px;
-  position: relative; /* Positionnement relatif pour éviter les conflits */
-  display: table-cell; /* Permet un alignement propre dans un tableau */
+  position: relative;
+  vertical-align: middle;
+  border-right: 1px solid #444; /* Pour une meilleure visibilité */
 }
+
 
 
 .gantt-task-name {
-  min-width: 160px; /* Largeur minimale pour éviter un conteneur trop étroit */
-  width: auto; /* Largeur automatique en fonction du contenu */
-  max-width: 100%; /* Ne dépasse pas du conteneur parent */
-  overflow: visible !important;
-  text-overflow: unset !important;
-  white-space: normal !important;
-  word-break: break-word !important;
+  display: table-cell;
+  min-width: 160px;
+  width: auto;
+  max-width: 300px; /* Limite pour éviter un étirement excessif */
+  white-space: normal;
+  word-break: break-word;
   padding: 8px 10px;
-  position: relative; /* Positionnement relatif pour éviter les conflits */
-  display: table-cell; /* Permet un alignement propre dans un tableau */
-  z-index: 3 !important; /* Garde le z-index si nécessaire pour la superposition */
-  left: unset !important; /* Enlève le positionnement absolu horizontal */
+  position: relative;
+  vertical-align: middle;
+  border-right: 1px solid #444; /* Pour une meilleure visibilité */
 }
+
 
 .gantt-row {
-  height: auto !important;
-  min-height: 40px !important;
-  overflow: visible !important;
-  display: table-row; /* Permet un comportement de tableau */
-  width: 100%; /* Prend toute la largeur disponible */
+  display: table-row;
+  height: auto;
+  min-height: 40px;
 }
 
+
 .gantt-task {
-  height: auto !important;
-  min-height: 40px !important;
-  overflow: visible !important;
-  display: table-cell; /* Permet un alignement propre dans un tableau */
+  display: table-cell;
+  height: auto;
+  min-height: 40px;
   padding: 8px 10px;
+  vertical-align: middle;
 }
 
 
