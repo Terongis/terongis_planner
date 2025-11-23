@@ -767,7 +767,86 @@
       border: 1px solid var(--color-border);
       position: relative;
     }
-    
+    .gantt-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: #2f3336;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+
+.gantt-fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #2f3336;
+  z-index: 9998;
+}
+
+.gantt-fullscreen-header {
+  position: sticky;
+  top: 0;
+  background: #2f3336;
+  padding: 15px 20px;
+  border-bottom: 2px solid var(--color-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10000;
+}
+
+.gantt-fullscreen-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-light);
+}
+
+.gantt-fullscreen-close {
+  background: transparent;
+  border: 2px solid var(--color-border);
+  color: var(--color-text-light);
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.gantt-fullscreen-close:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.gantt-fullscreen-hint {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(62, 220, 157, 0.9);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 100;
+}
+
+.gantt-container:hover .gantt-fullscreen-hint {
+  opacity: 1;
+}
     .gantt-year-header {
       background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%);
       color: white;
@@ -1287,15 +1366,17 @@
       </div>
 
       <!-- Contenu Onglet : Gantt -->
-      <div id="tab-gantt" class="tab-content">
-        <div class="card">
-          <h2 class="card-title">◫ Visualisation Gantt</h2>
-          <p class="text-muted mb-3">Cliquez sur une barre dans le diagramme pour marquer la tâche comme terminée.</p>
-          <div id="ganttWrapper">
-            <div id="ganttContainer" class="gantt-container"></div>
-          </div>
-        </div>
+    <div id="tab-gantt" class="tab-content">
+  <div class="card">
+    <h2 class="card-title">◫ Visualisation Gantt</h2>
+    <p class="text-muted mb-3">Double-cliquez sur le diagramme pour l'ouvrir en plein écran. Cliquez sur une barre pour marquer la tâche comme terminée.</p>
+    <div id="ganttWrapper">
+      <div id="ganttContainer" class="gantt-container" ondblclick="openGanttFullscreen()">
+        <div class="gantt-fullscreen-hint">🔍 Double-cliquez pour agrandir</div>
       </div>
+    </div>
+  </div>
+</div>
 
       <!-- Contenu Onglet : Catégories -->
       <div id="tab-categories" class="tab-content">
@@ -2247,6 +2328,73 @@ function renderGantt() {
     .then(() => console.log("SW OK"))
     .catch((err) => console.error("SW ERROR", err));
   }
+ // ============= GANTT PLEIN ÉCRAN =============
+function openGanttFullscreen() {
+  const container = document.getElementById('ganttContainer');
+  const wrapper = document.getElementById('ganttWrapper');
+  
+  // Créer l'overlay et le conteneur plein écran
+  const overlay = document.createElement('div');
+  overlay.className = 'gantt-fullscreen-overlay';
+  overlay.id = 'ganttFullscreenOverlay';
+  
+  const fullscreenContainer = document.createElement('div');
+  fullscreenContainer.className = 'gantt-fullscreen';
+  fullscreenContainer.id = 'ganttFullscreenContainer';
+  
+  // Créer l'en-tête avec bouton de fermeture
+  const header = document.createElement('div');
+  header.className = 'gantt-fullscreen-header';
+  header.innerHTML = `
+    <div class="gantt-fullscreen-title">📊 Diagramme de Gantt - Vue Complète</div>
+    <button class="gantt-fullscreen-close" onclick="closeGanttFullscreen()">✕ Fermer (ESC)</button>
+  `;
+  
+  // Cloner le contenu du Gantt
+  const ganttClone = container.cloneNode(true);
+  ganttClone.id = 'ganttContainerFullscreen';
+  ganttClone.removeAttribute('ondblclick');
+  ganttClone.querySelector('.gantt-fullscreen-hint')?.remove();
+  
+  // Assembler
+  fullscreenContainer.appendChild(header);
+  fullscreenContainer.appendChild(ganttClone);
+  document.body.appendChild(overlay);
+  document.body.appendChild(fullscreenContainer);
+  document.body.style.overflow = 'hidden';
+  
+  // Scroll jusqu'à aujourd'hui
+  setTimeout(() => {
+    const todayLine = ganttClone.querySelector('.gantt-today-line');
+    if (todayLine) {
+      const scrollableDiv = ganttClone.querySelector('[style*="overflow-x"]');
+      if (scrollableDiv) {
+        const linePosition = todayLine.offsetLeft;
+        scrollableDiv.scrollLeft = linePosition - (scrollableDiv.clientWidth / 2);
+      }
+    }
+  }, 100);
+  
+  // Fermeture avec ESC
+  document.addEventListener('keydown', handleEscapeKey);
+}
+
+function closeGanttFullscreen() {
+  const overlay = document.getElementById('ganttFullscreenOverlay');
+  const container = document.getElementById('ganttFullscreenContainer');
+  
+  if (overlay) overlay.remove();
+  if (container) container.remove();
+  
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', handleEscapeKey);
+}
+
+function handleEscapeKey(event) {
+  if (event.key === 'Escape') {
+    closeGanttFullscreen();
+  }
+}
 </script>
 
 </body>
