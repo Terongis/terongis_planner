@@ -1329,17 +1329,19 @@
         left: 0 !important;
       }
 
-      .gantt-task-name {
-        padding: 8px 4px !important;
-        font-size: 11px !important;
-        min-width: 120px !important;
-        max-width: 120px !important;
-        width: 120px !important;
-        left: 80px !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
-      }
+     .gantt-task-name {
+  padding: 8px 4px !important;
+  font-size: 11px !important;
+  min-width: 120px !important;
+  max-width: 120px !important;
+  width: 120px !important;
+  left: 80px !important;
+  /* MODIFICATION: Permet au texte de s'enrouler et au conteneur de grandir */
+  overflow: visible !important;
+  text-overflow: unset !important;
+  white-space: normal !important; 
+  height: auto !important; 
+}
       
       .gantt-cell {
         min-height: 35px;
