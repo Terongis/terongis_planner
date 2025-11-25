@@ -2241,16 +2241,17 @@ html += `</div>`;
   
 
   html += `</div>`;
+
+  
+  container.innerHTML = html;
  setTimeout(() => {
-    const scrollArea = container.querySelector('[style*="overflow-x"]');
+    const scrollArea = document.querySelector(".gantt-chart");
     if (scrollArea) {
         scrollArea.addEventListener("scroll", updateYearHeader);
     }
     updateYearHeader();
 }, 50);
 
-  
-  container.innerHTML = html;
   
   const wrapper = isFullscreen ? container.parentElement : document.getElementById("ganttWrapper");
   if (todayColIndex !== -1 && wrapper) {
