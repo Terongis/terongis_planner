@@ -2092,12 +2092,11 @@ function renderGantt(zoomLevel = 'day', isFullscreen = false) {
     html += `<div class="gantt-fullscreen-hint">🔍 Double-cliquez pour agrandir</div>`;
   }
   
-  const years = [...new Set(days.map(d => d.getFullYear()))];
-  const yearText = years.length > 1 ? years.join(' - ') : years[0];
   html += `<div style="display: flex; width: 100%;">`;
-  html += `<div style="width: ${fixedColWidth}px; min-width: ${fixedColWidth}px; background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%); flex-shrink: 0;"></div>`;
-  html += `<div class="gantt-year-header" style="flex: 1;">${yearText}</div>`;
-  html += `</div>`;
+html += `<div style="width: ${fixedColWidth}px; min-width: ${fixedColWidth}px; background: linear-gradient(135deg, #34ca71 0%, #5CFF94 100%); flex-shrink: 0;"></div>`;
+html += `<div id="ganttYearHeader" class="gantt-year-header" style="flex: 1;"></div>`;
+html += `</div>`;
+
   
   html += `<div style="overflow-x: auto; width: 100%;">`;
   html += `<div style="min-width: ${totalWidth}px;">`;
@@ -2242,6 +2241,14 @@ function renderGantt(zoomLevel = 'day', isFullscreen = false) {
   
 
   html += `</div>`;
+ setTimeout(() => {
+    const scrollArea = container.querySelector('[style*="overflow-x"]');
+    if (scrollArea) {
+        scrollArea.addEventListener("scroll", updateYearHeader);
+    }
+    updateYearHeader();
+}, 50);
+
   
   container.innerHTML = html;
   
@@ -2256,6 +2263,22 @@ function renderGantt(zoomLevel = 'day', isFullscreen = false) {
     }
   }
 }
+   function updateYearHeader() {
+    const header = document.getElementById("ganttYearHeader");
+    const scrollArea = document.querySelector('[style*="overflow-x"]');
+
+    if (!header || !scrollArea) return;
+
+    const isMobile = window.innerWidth <= 768;
+    const dayWidth = isMobile ? 25 : 50;
+
+    const visibleIndex = Math.floor(scrollArea.scrollLeft / dayWidth);
+    const currentDate = new Date(startRange);
+    currentDate.setDate(currentDate.getDate() + visibleIndex);
+
+    header.textContent = currentDate.getFullYear();
+}
+
 
 function getWeekNumber(date) {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
