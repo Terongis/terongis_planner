@@ -2244,13 +2244,6 @@ html += `</div>`;
 
   
   container.innerHTML = html;
- setTimeout(() => {
-    const scrollArea = document.querySelector(".gantt-chart");
-    if (scrollArea) {
-        scrollArea.addEventListener("scroll", updateYearHeader);
-    }
-    updateYearHeader();
-}, 50);
 
   
   const wrapper = isFullscreen ? container.parentElement : document.getElementById("ganttWrapper");
@@ -2263,6 +2256,13 @@ html += `</div>`;
       }, 100);
     }
   }
+ setTimeout(() => {
+    const scrollArea = document.querySelector('[style*="overflow-x"]');
+    if (scrollArea) {
+        scrollArea.addEventListener("scroll", updateYearHeader);
+    }
+    updateYearHeader();
+}, 50);
 }
    function updateYearHeader() {
     const header = document.getElementById("ganttYearHeader");
