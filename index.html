@@ -2003,9 +2003,9 @@ function renderGantt(zoomLevel = 'day', isFullscreen = false) {
   
   if (zoomLevel === 'day') {
     startRange = new Date(minDate);
-    startRange.setDate(startRange.getDate() - 7);
+    startRange.setDate(startRange.getDate() - 3);
     endRange = new Date(maxDate);
-    endRange.setDate(endRange.getDate() + 7);
+    endRange.setDate(endRange.getDate() + 365);
     dayWidth = isMobile ? 25 : 50;
     
     days = [];
