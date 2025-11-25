@@ -1295,15 +1295,10 @@
         padding: 0 !important;
       }
       
-  .gantt-container {
-  display: table;
-  width: 100%;
-  border-collapse: collapse;
-  overflow-x: auto;
-  border-radius: 8px;
-}
-
-
+.gantt-container {
+        border-radius: 8px !important;
+        overflow: visible !important;
+      }
       
       .gantt-year-header {
         padding: 10px !important;
@@ -1326,59 +1321,26 @@
         font-size: 9px !important;
       }
       
-.gantt-category-cell {
-  display: table-cell;
-  min-width: 120px;
-  width: auto;
-  max-width: 200px; /* Limite pour éviter un étirement excessif */
-  white-space: normal;
-  word-break: break-word;
-  padding: 8px 10px;
-  position: relative;
-  vertical-align: middle;
-  border-right: 1px solid #444; /* Pour une meilleure visibilité */
-}
+      .gantt-category-cell {
+        padding: 8px 4px !important;
+        font-size: 11px !important;
+        min-width: 80px !important;
+        max-width: 80px !important;
+        width: 80px !important;
+        left: 0 !important;
+      }
 
-
-
-.gantt-task-name {
-  display: table-cell;
-  min-width: 160px;
-  width: auto;
-  max-width: 300px; /* Limite pour éviter un étirement excessif */
-  white-space: normal;
-  word-break: break-word;
-  padding: 8px 10px;
-  position: relative;
-  vertical-align: middle;
-  border-right: 1px solid #444; /* Pour une meilleure visibilité */
-}
-
-
-.gantt-row {
-  display: table-row;
-  height: auto;
-  min-height: 40px;
-}
-
-
-.gantt-task {
-  display: table-cell;
-  height: auto;
-  min-height: 40px;
-  padding: 8px 10px;
-  vertical-align: middle;
-}
-
-
-.gantt-bar {
-    font-size: 0 !important;
-    top: 6px !important;
-    bottom: 6px !important;
-    left: 2px !important;
-    min-width: 8px !important;
-    z-index: 1 !important;
-}
+      .gantt-task-name {
+        padding: 8px 4px !important;
+        font-size: 11px !important;
+        min-width: 120px !important;
+        max-width: 120px !important;
+        width: 120px !important;
+        left: 80px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+      }
       
       .gantt-cell {
         min-height: 35px;
