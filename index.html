@@ -2186,7 +2186,7 @@ function renderGantt(zoomLevel = 'day', isFullscreen = false) {
     }
     
     const completedClass = task.completed ? 'completed' : '';
-    const taskNameShort = isMobile && task.name.length > 15 ? task.name.substring(0, 15) + '...' : task.name;
+    const taskNameShort = task.name; // ne tronque jamais
     html += `<div class="gantt-task-name ${completedClass}" onclick="toggleTaskCompletion('${task.id}')" title="${task.name}" style="--task-color: ${task.color};">
       <style>.gantt-task-name[title="${task.name.replace(/"/g, '&quot;')}"]:before { background: ${task.color}; }</style>
       ${taskNameShort}
